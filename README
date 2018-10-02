@@ -1,0 +1,3 @@
+How to update:
+- Run update.py to get newest submodules into the Makefile's ARCHIVE field
+- Run make autospec

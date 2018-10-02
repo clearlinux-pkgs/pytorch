@@ -1,0 +1,8 @@
+0.4.1
+eigen-dev
+gflags-dev
+glog-dev
+leveldb
+lmdb-dev
+numactl-dev
+snappy-dev
