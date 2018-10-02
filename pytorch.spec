@@ -4,7 +4,7 @@
 #
 Name     : pytorch
 Version  : 0.4.1
-Release  : 1
+Release  : 2
 URL      : https://github.com/pytorch/pytorch/archive/v0.4.1.tar.gz
 Source0  : https://github.com/pytorch/pytorch/archive/v0.4.1.tar.gz
 Source1  : https://github.com/ARM-software/ComputeLibrary/archive/292227986edb37b01061afcad6df18ba9d6ccbeb.tar.gz
@@ -37,7 +37,6 @@ Source27  : https://github.com/shibatch/sleef/archive/6ff7a135a1e31979d1e1844a2e
 Summary  : Python 3.4 Enum backported to 3.3, 3.2, 3.1, 2.7, 2.6, 2.5, and 2.4
 Group    : Development/Tools
 License  : Apache-2.0 BSD-2-Clause BSD-3-Clause BSD-3-Clause-Attribution BSL-1.0 GPL-2.0 GPL-3.0 LGPL-2.1 MIT MPL-2.0 MPL-2.0-no-copyleft-exception Unlicense Zlib
-Requires: pytorch-bin = %{version}-%{release}
 Requires: pytorch-data = %{version}-%{release}
 Requires: pytorch-license = %{version}-%{release}
 Requires: pytorch-python = %{version}-%{release}
@@ -52,48 +51,31 @@ Requires: pytools
 Requires: setuptools
 Requires: six
 Requires: typing
-BuildRequires : beignet-dev
-BuildRequires : boost-dev
 BuildRequires : buildreq-cmake
 BuildRequires : buildreq-distutils3
 BuildRequires : buildreq-golang
 BuildRequires : buildreq-meson
 BuildRequires : buildreq-scons
-BuildRequires : cmake
-BuildRequires : doxygen
 BuildRequires : eigen-dev
 BuildRequires : enum34
-BuildRequires : freeglut-dev
 BuildRequires : gflags-dev
-BuildRequires : git
-BuildRequires : glew-dev
-BuildRequires : glibc-dev
 BuildRequires : glog-dev
-BuildRequires : googletest-dev
 BuildRequires : leveldb
 BuildRequires : lmdb-dev
-BuildRequires : mesa-dev
+BuildRequires : mkl-dnn-dev
 BuildRequires : numactl-dev
 BuildRequires : numpy
 BuildRequires : onnx
 BuildRequires : opcodes
-BuildRequires : openblas
-BuildRequires : openmpi-dev
-BuildRequires : pkg-config
 BuildRequires : pluggy
-BuildRequires : protobuf-dev
 BuildRequires : py-python
 BuildRequires : pytest
-BuildRequires : python3
-BuildRequires : python3-dev
 BuildRequires : pytools
 BuildRequires : setuptools
 BuildRequires : six
 BuildRequires : snappy-dev
 BuildRequires : tox
 BuildRequires : virtualenv
-BuildRequires : xz-dev
-BuildRequires : zlib-dev
 
 %description
 ========================================
@@ -103,16 +85,6 @@ BuildRequires : zlib-dev
         the enumeration itself can be iterated over.
         
             from enum import Enum
-
-%package bin
-Summary: bin components for the pytorch package.
-Group: Binaries
-Requires: pytorch-data = %{version}-%{release}
-Requires: pytorch-license = %{version}-%{release}
-
-%description bin
-bin components for the pytorch package.
-
 
 %package data
 Summary: data components for the pytorch package.
@@ -125,7 +97,6 @@ data components for the pytorch package.
 %package dev
 Summary: dev components for the pytorch package.
 Group: Development
-Requires: pytorch-bin = %{version}-%{release}
 Requires: pytorch-data = %{version}-%{release}
 Provides: pytorch-devel = %{version}-%{release}
 
@@ -271,26 +242,20 @@ mkdir -p third_party/zstd
 mv %{_topdir}/BUILD/zstd-aec56a52fbab207fc639a1937d1e708a282edca8/* %{_topdir}/BUILD/pytorch-0.4.1/third_party/zstd
 
 %build
+## build_prepend content
+export NO_CUDA=1
+## build_prepend end
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1538500488
-mkdir -p clr-build
-pushd clr-build
-%cmake ..
-make  %{?_smp_mflags}
-popd
-
-%check
-export LANG=C
-export http_proxy=http://127.0.0.1:9/
-export https_proxy=http://127.0.0.1:9/
-export no_proxy=localhost,127.0.0.1,0.0.0.0
-cd clr-build; make test
+export SOURCE_DATE_EPOCH=1538521028
+python3 setup.py build -b py3
 
 %install
-export SOURCE_DATE_EPOCH=1538500488
+## install_prepend content
+export NO_CUDA=1
+## install_prepend end
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/pytorch
 cp LICENSE %{buildroot}/usr/share/package-licenses/pytorch/LICENSE
@@ -305,6 +270,7 @@ cp third_party/NNPACK/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/th
 cp third_party/benchmark/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/third_party_benchmark_LICENSE
 cp third_party/catch/LICENSE.txt %{buildroot}/usr/share/package-licenses/pytorch/third_party_catch_LICENSE.txt
 cp third_party/cereal/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/third_party_cereal_LICENSE
+cp third_party/cereal/include/cereal/external/rapidxml/license.txt %{buildroot}/usr/share/package-licenses/pytorch/third_party_cereal_include_cereal_external_rapidxml_license.txt
 cp third_party/cpuinfo/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/third_party_cpuinfo_LICENSE
 cp third_party/cub/LICENSE.TXT %{buildroot}/usr/share/package-licenses/pytorch/third_party_cub_LICENSE.TXT
 cp third_party/eigen/COPYING.BSD %{buildroot}/usr/share/package-licenses/pytorch/third_party_eigen_COPYING.BSD
@@ -337,786 +303,355 @@ cp third_party/sleef/LICENSE.txt %{buildroot}/usr/share/package-licenses/pytorch
 cp third_party/zstd/COPYING %{buildroot}/usr/share/package-licenses/pytorch/third_party_zstd_COPYING
 cp third_party/zstd/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/third_party_zstd_LICENSE
 cp third_party/zstd/contrib/linux-kernel/COPYING %{buildroot}/usr/share/package-licenses/pytorch/third_party_zstd_contrib_linux-kernel_COPYING
-pushd clr-build
-%make_install
-popd
+python3 -tt setup.py build -b py3 install --root=%{buildroot}
+echo ----[ mark ]----
+cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
+echo ----[ mark ]----
 
 %files
 %defattr(-,root,root,-)
 
-%files bin
-%defattr(-,root,root,-)
-/usr/bin/caffe2_benchmark
-/usr/bin/convert_caffe_image_db
-/usr/bin/convert_db
-/usr/bin/db_throughput
-/usr/bin/make_cifar_db
-/usr/bin/make_mnist_db
-/usr/bin/predictor_verifier
-/usr/bin/print_registered_core_operators
-/usr/bin/protoc
-/usr/bin/run_plan
-/usr/bin/run_plan_mpi
-/usr/bin/speed_benchmark
-/usr/bin/split_db
-/usr/bin/tutorial_blob
-
 %files data
 %defattr(-,root,root,-)
-/usr/share/cmake/*
 /usr/share/package-licenses/pytorch/NOTICE
 /usr/share/package-licenses/pytorch/third_party_nccl_debian_copyright
 
 %files dev
 %defattr(-,root,root,-)
-/usr/include/*.h
-/usr/include/__init__.py
-/usr/include/avx.py
-/usr/include/avx2.py
-/usr/include/caffe/proto/caffe.pb.h
-/usr/include/caffe2/contrib/aten/aten_op.h
-/usr/include/caffe2/contrib/aten/aten_op_template.h
-/usr/include/caffe2/contrib/cuda-convnet2/cudaconvnet/include/jpeg.h
-/usr/include/caffe2/contrib/cuda-convnet2/make-data/pyext/include/pyext.h
-/usr/include/caffe2/contrib/cuda-convnet2/util/include/matrix.h
-/usr/include/caffe2/contrib/cuda-convnet2/util/include/matrix_funcs.h
-/usr/include/caffe2/contrib/cuda-convnet2/util/include/queue.h
-/usr/include/caffe2/contrib/cuda-convnet2/util/include/sync.h
-/usr/include/caffe2/contrib/cuda-convnet2/util/include/thread.h
-/usr/include/caffe2/contrib/gloo/allgather_ops.h
-/usr/include/caffe2/contrib/gloo/allreduce_ops.h
-/usr/include/caffe2/contrib/gloo/barrier_ops.h
-/usr/include/caffe2/contrib/gloo/broadcast_ops.h
-/usr/include/caffe2/contrib/gloo/common.h
-/usr/include/caffe2/contrib/gloo/common_world_ops.h
-/usr/include/caffe2/contrib/gloo/context.h
-/usr/include/caffe2/contrib/gloo/reduce_scatter_ops.h
-/usr/include/caffe2/contrib/gloo/store_handler.h
-/usr/include/caffe2/contrib/nccl/cuda_nccl_gpu.h
-/usr/include/caffe2/contrib/nervana/nervana.h
-/usr/include/caffe2/contrib/nervana/nervana_c_api.h
-/usr/include/caffe2/contrib/opencl/context.h
-/usr/include/caffe2/contrib/prof/htrace_conf.h
-/usr/include/caffe2/contrib/prof/prof_dag_net.h
-/usr/include/caffe2/contrib/prof/prof_dag_stats_op.h
-/usr/include/caffe2/contrib/prof/profiling_annotations.h
-/usr/include/caffe2/contrib/prof/profiling_info.h
-/usr/include/caffe2/contrib/script/compiler.h
-/usr/include/caffe2/contrib/script/error_report.h
-/usr/include/caffe2/contrib/script/lexer.h
-/usr/include/caffe2/contrib/script/parser.h
-/usr/include/caffe2/contrib/script/tree.h
-/usr/include/caffe2/contrib/script/tree_views.h
-/usr/include/caffe2/contrib/shm_mutex/shm_mutex.h
-/usr/include/caffe2/contrib/tensorrt/tensorrt_op_trt.h
-/usr/include/caffe2/contrib/tensorrt/tensorrt_tranformer.h
-/usr/include/caffe2/contrib/tensorrt/trt_utils.h
-/usr/include/caffe2/contrib/warpctc/ctc_op.h
-/usr/include/caffe2/core/THCCachingAllocator.h
-/usr/include/caffe2/core/allocator.h
-/usr/include/caffe2/core/asan.h
-/usr/include/caffe2/core/blob.h
-/usr/include/caffe2/core/blob_serialization.h
-/usr/include/caffe2/core/blob_serializer_base.h
-/usr/include/caffe2/core/blob_stats.h
-/usr/include/caffe2/core/common.h
-/usr/include/caffe2/core/common_cudnn.h
-/usr/include/caffe2/core/common_gpu.h
-/usr/include/caffe2/core/common_omp.h
-/usr/include/caffe2/core/context.h
-/usr/include/caffe2/core/context_gpu.h
-/usr/include/caffe2/core/cudnn_wrappers.h
-/usr/include/caffe2/core/db.h
-/usr/include/caffe2/core/dispatch/DeviceId.h
-/usr/include/caffe2/core/dispatch/DispatchKey.h
-/usr/include/caffe2/core/dispatch/DispatchTable.h
-/usr/include/caffe2/core/dispatch/Dispatcher.h
-/usr/include/caffe2/core/dispatch/KernelRegistration.h
-/usr/include/caffe2/core/dispatch/LayoutId.h
-/usr/include/caffe2/core/dispatch/LeftRight.h
-/usr/include/caffe2/core/dispatch/OpSchema.h
-/usr/include/caffe2/core/dispatch/OpSchemaRegistration.h
-/usr/include/caffe2/core/dispatch/TensorTypeId.h
-/usr/include/caffe2/core/dispatch/TensorTypeIdRegistration.h
-/usr/include/caffe2/core/event.h
-/usr/include/caffe2/core/event_cpu.h
-/usr/include/caffe2/core/flags.h
-/usr/include/caffe2/core/graph.h
-/usr/include/caffe2/core/hip/common_hip.h
-/usr/include/caffe2/core/hip/common_miopen.h
-/usr/include/caffe2/core/hip/context_hip.h
-/usr/include/caffe2/core/hip/miopen_wrapper.h
-/usr/include/caffe2/core/init.h
-/usr/include/caffe2/core/logging.h
-/usr/include/caffe2/core/logging_is_google_glog.h
-/usr/include/caffe2/core/logging_is_not_google_glog.h
-/usr/include/caffe2/core/macros.h
-/usr/include/caffe2/core/memonger.h
-/usr/include/caffe2/core/module.h
-/usr/include/caffe2/core/net.h
-/usr/include/caffe2/core/net_async_base.h
-/usr/include/caffe2/core/net_async_dag_gpu.h
-/usr/include/caffe2/core/net_async_gpu_thread_pool.h
-/usr/include/caffe2/core/net_async_polling.h
-/usr/include/caffe2/core/net_async_scheduling.h
-/usr/include/caffe2/core/net_async_tracing.h
-/usr/include/caffe2/core/net_dag.h
-/usr/include/caffe2/core/net_dag_utils.h
-/usr/include/caffe2/core/net_simple.h
-/usr/include/caffe2/core/net_simple_async.h
-/usr/include/caffe2/core/nomnigraph/include/nomnigraph/Converters/Dot.h
-/usr/include/caffe2/core/nomnigraph/include/nomnigraph/Generated/OpClasses.h
-/usr/include/caffe2/core/nomnigraph/include/nomnigraph/Generated/OpEnum.h
-/usr/include/caffe2/core/nomnigraph/include/nomnigraph/Generated/OpNames.h
-/usr/include/caffe2/core/nomnigraph/include/nomnigraph/Graph/Algorithms.h
-/usr/include/caffe2/core/nomnigraph/include/nomnigraph/Graph/BinaryMatchImpl.h
-/usr/include/caffe2/core/nomnigraph/include/nomnigraph/Graph/Graph.h
-/usr/include/caffe2/core/nomnigraph/include/nomnigraph/Graph/TarjansImpl.h
-/usr/include/caffe2/core/nomnigraph/include/nomnigraph/Representations/Compiler.h
-/usr/include/caffe2/core/nomnigraph/include/nomnigraph/Representations/ControlFlow.h
-/usr/include/caffe2/core/nomnigraph/include/nomnigraph/Representations/NeuralNet.h
-/usr/include/caffe2/core/nomnigraph/include/nomnigraph/Support/Casting.h
-/usr/include/caffe2/core/nomnigraph/include/nomnigraph/Support/Common.h
-/usr/include/caffe2/core/nomnigraph/include/nomnigraph/Support/Pointer.h
-/usr/include/caffe2/core/nomnigraph/include/nomnigraph/Transformations/Match.h
-/usr/include/caffe2/core/nomnigraph/tests/test_util.h
-/usr/include/caffe2/core/numa.h
-/usr/include/caffe2/core/observer.h
-/usr/include/caffe2/core/operator.h
-/usr/include/caffe2/core/operator_gradient.h
-/usr/include/caffe2/core/operator_schema.h
-/usr/include/caffe2/core/plan_executor.h
-/usr/include/caffe2/core/predictor.h
-/usr/include/caffe2/core/predictor_utils.h
-/usr/include/caffe2/core/qtensor.h
-/usr/include/caffe2/core/qtensor_serialization.h
-/usr/include/caffe2/core/registry.h
-/usr/include/caffe2/core/scope_guard.h
-/usr/include/caffe2/core/static_tracepoint.h
-/usr/include/caffe2/core/static_tracepoint_elfx86.h
-/usr/include/caffe2/core/stats.h
-/usr/include/caffe2/core/tensor.h
-/usr/include/caffe2/core/tensor_int8.h
-/usr/include/caffe2/core/timer.h
-/usr/include/caffe2/core/transform.h
-/usr/include/caffe2/core/typeid.h
-/usr/include/caffe2/core/types.h
-/usr/include/caffe2/core/workspace.h
-/usr/include/caffe2/cuda_rtc/common_rtc.h
-/usr/include/caffe2/db/create_db_op.h
-/usr/include/caffe2/distributed/file_store_handler.h
-/usr/include/caffe2/distributed/file_store_handler_op.h
-/usr/include/caffe2/distributed/redis_store_handler.h
-/usr/include/caffe2/distributed/redis_store_handler_op.h
-/usr/include/caffe2/distributed/store_handler.h
-/usr/include/caffe2/distributed/store_ops.h
-/usr/include/caffe2/experiments/operators/fully_connected_op_decomposition.h
-/usr/include/caffe2/experiments/operators/fully_connected_op_prune.h
-/usr/include/caffe2/experiments/operators/fully_connected_op_sparse.h
-/usr/include/caffe2/experiments/operators/funhash_op.h
-/usr/include/caffe2/experiments/operators/sparse_funhash_op.h
-/usr/include/caffe2/experiments/operators/sparse_matrix_reshape_op.h
-/usr/include/caffe2/experiments/operators/tt_contraction_op.h
-/usr/include/caffe2/experiments/operators/tt_pad_op.h
-/usr/include/caffe2/ideep/ideep_utils.h
-/usr/include/caffe2/ideep/operators/conv_pool_base_op.h
-/usr/include/caffe2/ideep/operators/operator_fallback_ideep.h
-/usr/include/caffe2/ideep/utils/ideep_context.h
-/usr/include/caffe2/ideep/utils/ideep_operator.h
-/usr/include/caffe2/image/image_input_op.h
-/usr/include/caffe2/image/transform_gpu.h
-/usr/include/caffe2/mkl/mkl_utils.h
-/usr/include/caffe2/mkl/operators/operator_fallback_mkl.h
-/usr/include/caffe2/mkl/utils/mkl_context.h
-/usr/include/caffe2/mkl/utils/mkl_dnn_cppwrapper.h
-/usr/include/caffe2/mkl/utils/mkl_memory.h
-/usr/include/caffe2/mkl/utils/mkl_operator.h
-/usr/include/caffe2/mkl/utils/mkl_version_check.h
-/usr/include/caffe2/mkl/utils/sgemm_pack.h
-/usr/include/caffe2/mobile/contrib/arm-compute/core/context.h
-/usr/include/caffe2/mobile/contrib/arm-compute/core/net_gl.h
-/usr/include/caffe2/mobile/contrib/arm-compute/core/operator.h
-/usr/include/caffe2/mobile/contrib/arm-compute/core/rewrite_net.h
-/usr/include/caffe2/mobile/contrib/arm-compute/operators/activation_ops.h
-/usr/include/caffe2/mobile/contrib/arm-compute/test/gl_model_test.h
-/usr/include/caffe2/mobile/contrib/arm-compute/test/gl_operator_test.h
-/usr/include/caffe2/mobile/contrib/ios/ios_caffe.h
-/usr/include/caffe2/mobile/contrib/ios/ios_caffe_defines.h
-/usr/include/caffe2/mobile/contrib/ios/ios_caffe_predictor.h
-/usr/include/caffe2/mobile/contrib/ios/mpscnn/mpscnn.h
-/usr/include/caffe2/mobile/contrib/ios/mpscnn/mpscnn_context.h
-/usr/include/caffe2/mobile/contrib/ios/mpscnn/mpscnn_graph_mask.h
-/usr/include/caffe2/mobile/contrib/ios/mpscnn/mpscnn_kernels.h
-/usr/include/caffe2/mobile/contrib/ios/mpscnn/mpscnn_test.h
-/usr/include/caffe2/mobile/contrib/libopencl-stub/include/CL/cl.h
-/usr/include/caffe2/mobile/contrib/libopencl-stub/include/CL/cl_ext.h
-/usr/include/caffe2/mobile/contrib/libopencl-stub/include/CL/cl_gl.h
-/usr/include/caffe2/mobile/contrib/libopencl-stub/include/CL/cl_gl_ext.h
-/usr/include/caffe2/mobile/contrib/libopencl-stub/include/CL/cl_platform.h
-/usr/include/caffe2/mobile/contrib/libopencl-stub/include/CL/opencl.h
-/usr/include/caffe2/mobile/contrib/libopencl-stub/include/libopencl.h
-/usr/include/caffe2/mobile/contrib/libvulkan-stub/include/libvulkan-stub.h
-/usr/include/caffe2/mobile/contrib/libvulkan-stub/include/vulkan/vk_platform.h
-/usr/include/caffe2/mobile/contrib/libvulkan-stub/include/vulkan/vulkan.h
-/usr/include/caffe2/mobile/contrib/nnapi/NeuralNetworks.h
-/usr/include/caffe2/mobile/contrib/nnapi/dlnnapi.h
-/usr/include/caffe2/mobile/contrib/nnapi/nnapi.h
-/usr/include/caffe2/mobile/contrib/opengl/android/AndroidGLContext.h
-/usr/include/caffe2/mobile/contrib/opengl/android/arm_neon_support.h
-/usr/include/caffe2/mobile/contrib/opengl/android/gl3stub.h
-/usr/include/caffe2/mobile/contrib/opengl/core/DataTransfer.h
-/usr/include/caffe2/mobile/contrib/opengl/core/GL.h
-/usr/include/caffe2/mobile/contrib/opengl/core/GLContext.h
-/usr/include/caffe2/mobile/contrib/opengl/core/GLFilter.h
-/usr/include/caffe2/mobile/contrib/opengl/core/GLImage.h
-/usr/include/caffe2/mobile/contrib/opengl/core/GLImageAllocator.h
-/usr/include/caffe2/mobile/contrib/opengl/core/GLLogging.h
-/usr/include/caffe2/mobile/contrib/opengl/core/GLPBO.h
-/usr/include/caffe2/mobile/contrib/opengl/core/GLPlainTexture.h
-/usr/include/caffe2/mobile/contrib/opengl/core/GLPredictor.h
-/usr/include/caffe2/mobile/contrib/opengl/core/GLTexture.h
-/usr/include/caffe2/mobile/contrib/opengl/core/ImageAllocator.h
-/usr/include/caffe2/mobile/contrib/opengl/core/arm_neon_support.h
-/usr/include/caffe2/mobile/contrib/opengl/core/rewrite_net.h
-/usr/include/caffe2/mobile/contrib/opengl/ios/IOSGLContext.h
-/usr/include/caffe2/mobile/contrib/opengl/ios/IOSGLImageAllocator.h
-/usr/include/caffe2/mobile/contrib/opengl/ios/IOSGLTexture.h
-/usr/include/caffe2/mobile/contrib/opengl/operators/GLConvolution.h
-/usr/include/caffe2/mobile/contrib/opengl/operators/gl_tiling_utils.h
-/usr/include/caffe2/mobile/contrib/opengl/test/TestGLConvolution.h
-/usr/include/caffe2/mobile/contrib/opengl/test/opengl_test.h
-/usr/include/caffe2/mobile/contrib/snpe/snpe_ffi.h
-/usr/include/caffe2/mobile/contrib/ulp2/ulp.h
-/usr/include/caffe2/mobile/contrib/ulp2/ulp_neon.h
-/usr/include/caffe2/mpi/mpi_common.h
-/usr/include/caffe2/mpi/mpi_ops.h
-/usr/include/caffe2/observers/operator_attaching_net_observer.h
-/usr/include/caffe2/observers/profile_observer.h
-/usr/include/caffe2/observers/runcnt_observer.h
-/usr/include/caffe2/observers/time_observer.h
-/usr/include/caffe2/onnx/backend.h
-/usr/include/caffe2/onnx/backend_rep.h
-/usr/include/caffe2/onnx/device.h
-/usr/include/caffe2/onnx/helper.h
-/usr/include/caffe2/onnx/onnx_exporter.h
-/usr/include/caffe2/onnx/onnxifi_init.h
-/usr/include/caffe2/operators/abs_op.h
-/usr/include/caffe2/operators/accumulate_op.h
-/usr/include/caffe2/operators/accuracy_op.h
-/usr/include/caffe2/operators/acos_op.h
-/usr/include/caffe2/operators/activation_ops_cudnn.h
-/usr/include/caffe2/operators/affine_channel_op.h
-/usr/include/caffe2/operators/apmeter_op.h
-/usr/include/caffe2/operators/arg_ops.h
-/usr/include/caffe2/operators/asin_op.h
-/usr/include/caffe2/operators/assert_op.h
-/usr/include/caffe2/operators/atan_op.h
-/usr/include/caffe2/operators/batch_box_cox_op.h
-/usr/include/caffe2/operators/batch_bucketize_op.h
-/usr/include/caffe2/operators/batch_gather_ops.h
-/usr/include/caffe2/operators/batch_matmul_op.h
-/usr/include/caffe2/operators/batch_sparse_to_dense_op.h
-/usr/include/caffe2/operators/bbox_transform_op.h
-/usr/include/caffe2/operators/boolean_mask_ops.h
-/usr/include/caffe2/operators/boolean_unmask_ops.h
-/usr/include/caffe2/operators/box_with_nms_limit_op.h
-/usr/include/caffe2/operators/cast_op.h
-/usr/include/caffe2/operators/cbrt_op.h
-/usr/include/caffe2/operators/ceil_op.h
-/usr/include/caffe2/operators/channel_backprop_stats_op.h
-/usr/include/caffe2/operators/channel_shuffle_op.h
-/usr/include/caffe2/operators/channel_stats_op.h
-/usr/include/caffe2/operators/clip_op.h
-/usr/include/caffe2/operators/collect_and_distribute_fpn_rpn_proposals_op.h
-/usr/include/caffe2/operators/concat_split_op.h
-/usr/include/caffe2/operators/conditional_op.h
-/usr/include/caffe2/operators/conv_op.h
-/usr/include/caffe2/operators/conv_op_cache_cudnn.h
-/usr/include/caffe2/operators/conv_op_impl.h
-/usr/include/caffe2/operators/conv_op_shared.h
-/usr/include/caffe2/operators/conv_pool_op_base.h
-/usr/include/caffe2/operators/conv_transpose_op.h
-/usr/include/caffe2/operators/conv_transpose_op_impl.h
-/usr/include/caffe2/operators/conv_transpose_op_mobile.h
-/usr/include/caffe2/operators/conv_transpose_op_mobile_impl.h
-/usr/include/caffe2/operators/conv_transpose_unpool_op_base.h
-/usr/include/caffe2/operators/cos_op.h
-/usr/include/caffe2/operators/cosh_op.h
-/usr/include/caffe2/operators/cosine_embedding_criterion_op.h
-/usr/include/caffe2/operators/counter_ops.h
-/usr/include/caffe2/operators/create_scope_op.h
-/usr/include/caffe2/operators/cross_entropy_op.h
-/usr/include/caffe2/operators/ctc_greedy_decoder_op.h
-/usr/include/caffe2/operators/cube_op.h
-/usr/include/caffe2/operators/dataset_ops.h
-/usr/include/caffe2/operators/deform_conv_op.h
-/usr/include/caffe2/operators/deform_conv_op_impl.h
-/usr/include/caffe2/operators/distance_op.h
-/usr/include/caffe2/operators/do_op.h
-/usr/include/caffe2/operators/dropout_op.h
-/usr/include/caffe2/operators/elementwise_add_op.h
-/usr/include/caffe2/operators/elementwise_div_op.h
-/usr/include/caffe2/operators/elementwise_linear_op.h
-/usr/include/caffe2/operators/elementwise_logical_ops.h
-/usr/include/caffe2/operators/elementwise_mul_op.h
-/usr/include/caffe2/operators/elementwise_op_test.h
-/usr/include/caffe2/operators/elementwise_ops.h
-/usr/include/caffe2/operators/elementwise_ops_utils.h
-/usr/include/caffe2/operators/elementwise_sub_op.h
-/usr/include/caffe2/operators/elu_op.h
-/usr/include/caffe2/operators/enforce_finite_op.h
-/usr/include/caffe2/operators/ensure_clipped_op.h
-/usr/include/caffe2/operators/ensure_cpu_output_op.h
-/usr/include/caffe2/operators/exp_op.h
-/usr/include/caffe2/operators/expand_op.h
-/usr/include/caffe2/operators/expand_squeeze_dims_op.h
-/usr/include/caffe2/operators/fc_inference.h
-/usr/include/caffe2/operators/feature_maps_ops.h
-/usr/include/caffe2/operators/feed_blob_op.h
-/usr/include/caffe2/operators/filler_op.h
-/usr/include/caffe2/operators/find_duplicate_elements_op.h
-/usr/include/caffe2/operators/find_op.h
-/usr/include/caffe2/operators/flatten_op.h
-/usr/include/caffe2/operators/flexible_top_k.h
-/usr/include/caffe2/operators/floor_op.h
-/usr/include/caffe2/operators/free_op.h
-/usr/include/caffe2/operators/fully_connected_op.h
-/usr/include/caffe2/operators/fused_rowwise_8bit_conversion_ops.h
-/usr/include/caffe2/operators/gather_fused_8bit_rowwise_op.h
-/usr/include/caffe2/operators/gather_ranges_to_dense_op.h
-/usr/include/caffe2/operators/generate_proposals_op.h
-/usr/include/caffe2/operators/generate_proposals_op_util_boxes.h
-/usr/include/caffe2/operators/generate_proposals_op_util_nms.h
-/usr/include/caffe2/operators/given_tensor_fill_op.h
-/usr/include/caffe2/operators/glu_op.h
-/usr/include/caffe2/operators/group_norm_op.h
-/usr/include/caffe2/operators/gru_unit_op.h
-/usr/include/caffe2/operators/h_softmax_op.h
-/usr/include/caffe2/operators/half_float_ops.h
-/usr/include/caffe2/operators/heatmap_max_keypoint_op.h
-/usr/include/caffe2/operators/hip/operator_fallback_hip.h
-/usr/include/caffe2/operators/if_op.h
-/usr/include/caffe2/operators/im2col_op.h
-/usr/include/caffe2/operators/index_hash_ops.h
-/usr/include/caffe2/operators/instance_norm_op.h
-/usr/include/caffe2/operators/integral_image_op.h
-/usr/include/caffe2/operators/jsd_op.h
-/usr/include/caffe2/operators/key_split_ops.h
-/usr/include/caffe2/operators/layer_norm_op.h
-/usr/include/caffe2/operators/leaky_relu_op.h
-/usr/include/caffe2/operators/lengths_pad_op.h
-/usr/include/caffe2/operators/lengths_reducer_fused_8bit_rowwise_ops.h
-/usr/include/caffe2/operators/lengths_reducer_ops.h
-/usr/include/caffe2/operators/lengths_reducer_rowwise_8bit_ops.h
-/usr/include/caffe2/operators/lengths_tile_op.h
-/usr/include/caffe2/operators/lengths_top_k_op.h
-/usr/include/caffe2/operators/listwise_l2r_op.h
-/usr/include/caffe2/operators/load_save_op.h
-/usr/include/caffe2/operators/local_response_normalization_op.h
-/usr/include/caffe2/operators/locally_connected_op.h
-/usr/include/caffe2/operators/locally_connected_op_impl.h
-/usr/include/caffe2/operators/locally_connected_op_util.h
-/usr/include/caffe2/operators/log_op.h
-/usr/include/caffe2/operators/logit_op.h
-/usr/include/caffe2/operators/loss_op.h
-/usr/include/caffe2/operators/lpnorm_op.h
-/usr/include/caffe2/operators/lstm_unit_op.h
-/usr/include/caffe2/operators/map_ops.h
-/usr/include/caffe2/operators/margin_ranking_criterion_op.h
-/usr/include/caffe2/operators/matmul_op.h
-/usr/include/caffe2/operators/max_pool_with_index.h
-/usr/include/caffe2/operators/mean_op.h
-/usr/include/caffe2/operators/merge_id_lists_op.h
-/usr/include/caffe2/operators/minmax_ops.h
-/usr/include/caffe2/operators/mod_op.h
-/usr/include/caffe2/operators/moments_op.h
-/usr/include/caffe2/operators/multi_class_accuracy_op.h
-/usr/include/caffe2/operators/negate_gradient_op.h
-/usr/include/caffe2/operators/negative_op.h
-/usr/include/caffe2/operators/ngram_ops.h
-/usr/include/caffe2/operators/no_default_engine_op.h
-/usr/include/caffe2/operators/normalize_l1_op.h
-/usr/include/caffe2/operators/normalize_op.h
-/usr/include/caffe2/operators/numpy_tile_op.h
-/usr/include/caffe2/operators/one_hot_ops.h
-/usr/include/caffe2/operators/onnx_while_op.h
-/usr/include/caffe2/operators/onnxifi_op.h
-/usr/include/caffe2/operators/op_utils_cudnn.h
-/usr/include/caffe2/operators/operator_fallback_gpu.h
-/usr/include/caffe2/operators/order_switch_ops.h
-/usr/include/caffe2/operators/pack_rnn_sequence_op.h
-/usr/include/caffe2/operators/pack_segments.h
-/usr/include/caffe2/operators/pad_op.h
-/usr/include/caffe2/operators/partition_ops.h
-/usr/include/caffe2/operators/percentile_op.h
-/usr/include/caffe2/operators/perplexity_op.h
-/usr/include/caffe2/operators/piecewise_linear_transform_op.h
-/usr/include/caffe2/operators/pool_op.h
-/usr/include/caffe2/operators/pow_op.h
-/usr/include/caffe2/operators/prefetch_op.h
-/usr/include/caffe2/operators/prelu_op.h
-/usr/include/caffe2/operators/prepend_dim_op.h
-/usr/include/caffe2/operators/quant_decode_op.h
-/usr/include/caffe2/operators/rank_loss_op.h
-/usr/include/caffe2/operators/reduce_ops.h
-/usr/include/caffe2/operators/reducer_functors.h
-/usr/include/caffe2/operators/reduction_front_back_ops.h
-/usr/include/caffe2/operators/reduction_ops.h
-/usr/include/caffe2/operators/relu_n_op.h
-/usr/include/caffe2/operators/relu_op.h
-/usr/include/caffe2/operators/remove_data_blocks_op.h
-/usr/include/caffe2/operators/replace_nan_op.h
-/usr/include/caffe2/operators/reshape_op.h
-/usr/include/caffe2/operators/resize_op.h
-/usr/include/caffe2/operators/reverse_packed_segs_op.h
-/usr/include/caffe2/operators/rmac_regions_op.h
-/usr/include/caffe2/operators/rnn/recurrent_network_blob_fetcher_op.h
-/usr/include/caffe2/operators/rnn/recurrent_network_executor.h
-/usr/include/caffe2/operators/rnn/recurrent_network_executor_gpu.h
-/usr/include/caffe2/operators/rnn/recurrent_network_executor_incl.h
-/usr/include/caffe2/operators/rnn/recurrent_network_op.h
-/usr/include/caffe2/operators/rnn/recurrent_op_cudnn.h
-/usr/include/caffe2/operators/roi_align_gradient_op.h
-/usr/include/caffe2/operators/roi_align_op.h
-/usr/include/caffe2/operators/roi_align_rotated_gradient_op.h
-/usr/include/caffe2/operators/roi_align_rotated_op.h
-/usr/include/caffe2/operators/roi_pool_op.h
-/usr/include/caffe2/operators/rowmul_op.h
-/usr/include/caffe2/operators/rsqrt_op.h
-/usr/include/caffe2/operators/scale_op.h
-/usr/include/caffe2/operators/segment_reduction_op.h
-/usr/include/caffe2/operators/selu_op.h
-/usr/include/caffe2/operators/sequence_ops.h
-/usr/include/caffe2/operators/shape_op.h
-/usr/include/caffe2/operators/sigmoid_op.h
-/usr/include/caffe2/operators/sin_op.h
-/usr/include/caffe2/operators/sinh_op.h
-/usr/include/caffe2/operators/sinusoid_position_encoding_op.h
-/usr/include/caffe2/operators/slice_op.h
-/usr/include/caffe2/operators/softmax_op.h
-/usr/include/caffe2/operators/softmax_shared.h
-/usr/include/caffe2/operators/softmax_with_loss_op.h
-/usr/include/caffe2/operators/softplus_op.h
-/usr/include/caffe2/operators/softsign_op.h
-/usr/include/caffe2/operators/space_batch_op.h
-/usr/include/caffe2/operators/sparse_normalize_op.h
-/usr/include/caffe2/operators/sparse_to_dense_mask_op.h
-/usr/include/caffe2/operators/sparse_to_dense_op.h
-/usr/include/caffe2/operators/spatial_batch_norm_op.h
-/usr/include/caffe2/operators/spatial_softmax_with_loss_op.h
-/usr/include/caffe2/operators/sqr_op.h
-/usr/include/caffe2/operators/sqrt_op.h
-/usr/include/caffe2/operators/square_root_divide_op.h
-/usr/include/caffe2/operators/stop_gradient.h
-/usr/include/caffe2/operators/string_ops.h
-/usr/include/caffe2/operators/stump_func_op.h
-/usr/include/caffe2/operators/summarize_op.h
-/usr/include/caffe2/operators/swish_op.h
-/usr/include/caffe2/operators/tan_op.h
-/usr/include/caffe2/operators/tanh_op.h
-/usr/include/caffe2/operators/tensor_protos_db_input.h
-/usr/include/caffe2/operators/text_file_reader_utils.h
-/usr/include/caffe2/operators/thresholded_relu_op.h
-/usr/include/caffe2/operators/tile_op.h
-/usr/include/caffe2/operators/top_k.h
-/usr/include/caffe2/operators/transpose_op.h
-/usr/include/caffe2/operators/tt_linear_op.h
-/usr/include/caffe2/operators/unique_ops.h
-/usr/include/caffe2/operators/upsample_op.h
-/usr/include/caffe2/operators/utility_ops.h
-/usr/include/caffe2/operators/variable_length_sequence_padding.h
-/usr/include/caffe2/operators/weighted_multi_sampling_op.h
-/usr/include/caffe2/operators/weighted_sample_op.h
-/usr/include/caffe2/operators/while_op.h
-/usr/include/caffe2/operators/zero_gradient_op.h
-/usr/include/caffe2/opt/backend_cutting.h
-/usr/include/caffe2/opt/converter.h
-/usr/include/caffe2/opt/device.h
-/usr/include/caffe2/opt/fusion.h
-/usr/include/caffe2/opt/mobile.h
-/usr/include/caffe2/opt/onnx_convert.h
-/usr/include/caffe2/opt/optimize_ideep.h
-/usr/include/caffe2/opt/optimizer.h
-/usr/include/caffe2/opt/passes.h
-/usr/include/caffe2/opt/sink.h
-/usr/include/caffe2/perfkernels/common.h
-/usr/include/caffe2/perfkernels/cvtsh_ss_bugfix.h
-/usr/include/caffe2/perfkernels/embedding_lookup.h
-/usr/include/caffe2/perfkernels/fused_8bit_rowwise_embedding_lookup.h
-/usr/include/caffe2/perfkernels/typed_axpy.h
-/usr/include/caffe2/proto/caffe2.pb.h
-/usr/include/caffe2/proto/caffe2_legacy.pb.h
-/usr/include/caffe2/proto/hsm.pb.h
-/usr/include/caffe2/proto/metanet.pb.h
-/usr/include/caffe2/proto/predictor_consts.pb.h
-/usr/include/caffe2/proto/prof_dag.pb.h
-/usr/include/caffe2/python/dlpack.h
-/usr/include/caffe2/python/pybind_state.h
-/usr/include/caffe2/python/pybind_state_dlpack.h
-/usr/include/caffe2/queue/blobs_queue.h
-/usr/include/caffe2/queue/blobs_queue_db.h
-/usr/include/caffe2/queue/queue_ops.h
-/usr/include/caffe2/queue/rebatching_queue.h
-/usr/include/caffe2/queue/rebatching_queue_ops.h
-/usr/include/caffe2/sgd/adagrad_op.h
-/usr/include/caffe2/sgd/adam_op.h
-/usr/include/caffe2/sgd/clip_tensor_op.h
-/usr/include/caffe2/sgd/fp16_momentum_sgd_op.h
-/usr/include/caffe2/sgd/fp32_momentum_sgd_op.h
-/usr/include/caffe2/sgd/ftrl_op.h
-/usr/include/caffe2/sgd/gftrl_op.h
-/usr/include/caffe2/sgd/iter_op.h
-/usr/include/caffe2/sgd/lars_op.h
-/usr/include/caffe2/sgd/learning_rate_adaption_op.h
-/usr/include/caffe2/sgd/learning_rate_functors.h
-/usr/include/caffe2/sgd/learning_rate_op.h
-/usr/include/caffe2/sgd/momentum_sgd_op.h
-/usr/include/caffe2/sgd/rmsprop_op.h
-/usr/include/caffe2/sgd/wngrad_op.h
-/usr/include/caffe2/sgd/yellowfin_op.h
-/usr/include/caffe2/share/contrib/zstd/quant_decomp_zstd_op.h
-/usr/include/caffe2/transforms/common_subexpression_elimination.h
-/usr/include/caffe2/transforms/conv_to_nnpack_transform.h
-/usr/include/caffe2/transforms/pattern_net_transform.h
-/usr/include/caffe2/transforms/single_op_transform.h
-/usr/include/caffe2/utils/Array.h
-/usr/include/caffe2/utils/C++17.h
-/usr/include/caffe2/utils/IdWrapper.h
-/usr/include/caffe2/utils/Metaprogramming.h
-/usr/include/caffe2/utils/Optional.h
-/usr/include/caffe2/utils/TypeList.h
-/usr/include/caffe2/utils/TypeTraits.h
-/usr/include/caffe2/utils/bench_utils.h
-/usr/include/caffe2/utils/cast.h
-/usr/include/caffe2/utils/cblas.h
-/usr/include/caffe2/utils/conversions.h
-/usr/include/caffe2/utils/cpu_neon.h
-/usr/include/caffe2/utils/cpuid.h
-/usr/include/caffe2/utils/eigen_utils.h
-/usr/include/caffe2/utils/filler.h
-/usr/include/caffe2/utils/fixed_divisor.h
-/usr/include/caffe2/utils/flat_hash_map/flat_hash_map.h
-/usr/include/caffe2/utils/hip/mixed_utils_hip.h
-/usr/include/caffe2/utils/map_utils.h
-/usr/include/caffe2/utils/math-detail.h
-/usr/include/caffe2/utils/math.h
-/usr/include/caffe2/utils/math_utils.h
-/usr/include/caffe2/utils/mixed_utils.h
-/usr/include/caffe2/utils/murmur_hash3.h
-/usr/include/caffe2/utils/proto_utils.h
-/usr/include/caffe2/utils/proto_wrap.h
-/usr/include/caffe2/utils/signal_handler.h
-/usr/include/caffe2/utils/simple_queue.h
-/usr/include/caffe2/utils/smart_tensor_printer.h
-/usr/include/caffe2/utils/string_utils.h
-/usr/include/caffe2/utils/thread_name.h
-/usr/include/caffe2/utils/thread_pool.h
-/usr/include/caffe2/utils/threadpool/ThreadPool.h
-/usr/include/caffe2/utils/threadpool/ThreadPoolCommon.h
-/usr/include/caffe2/utils/threadpool/WorkersPool.h
-/usr/include/caffe2/utils/threadpool/pthreadpool.h
-/usr/include/caffe2/utils/zmq_helper.h
-/usr/include/caffe2/video/optical_flow.h
-/usr/include/caffe2/video/video_decoder.h
-/usr/include/caffe2/video/video_input_op.h
-/usr/include/caffe2/video/video_io.h
-/usr/include/google/protobuf/any.h
-/usr/include/google/protobuf/any.pb.h
-/usr/include/google/protobuf/any.proto
-/usr/include/google/protobuf/api.pb.h
-/usr/include/google/protobuf/api.proto
-/usr/include/google/protobuf/arena.h
-/usr/include/google/protobuf/arena_impl.h
-/usr/include/google/protobuf/arenastring.h
-/usr/include/google/protobuf/compiler/code_generator.h
-/usr/include/google/protobuf/compiler/command_line_interface.h
-/usr/include/google/protobuf/compiler/cpp/cpp_generator.h
-/usr/include/google/protobuf/compiler/csharp/csharp_generator.h
-/usr/include/google/protobuf/compiler/csharp/csharp_names.h
-/usr/include/google/protobuf/compiler/importer.h
-/usr/include/google/protobuf/compiler/java/java_generator.h
-/usr/include/google/protobuf/compiler/java/java_names.h
-/usr/include/google/protobuf/compiler/javanano/javanano_generator.h
-/usr/include/google/protobuf/compiler/js/js_generator.h
-/usr/include/google/protobuf/compiler/js/well_known_types_embed.h
-/usr/include/google/protobuf/compiler/objectivec/objectivec_generator.h
-/usr/include/google/protobuf/compiler/objectivec/objectivec_helpers.h
-/usr/include/google/protobuf/compiler/parser.h
-/usr/include/google/protobuf/compiler/php/php_generator.h
-/usr/include/google/protobuf/compiler/plugin.h
-/usr/include/google/protobuf/compiler/plugin.pb.h
-/usr/include/google/protobuf/compiler/plugin.proto
-/usr/include/google/protobuf/compiler/python/python_generator.h
-/usr/include/google/protobuf/compiler/ruby/ruby_generator.h
-/usr/include/google/protobuf/descriptor.h
-/usr/include/google/protobuf/descriptor.pb.h
-/usr/include/google/protobuf/descriptor.proto
-/usr/include/google/protobuf/descriptor_database.h
-/usr/include/google/protobuf/duration.pb.h
-/usr/include/google/protobuf/duration.proto
-/usr/include/google/protobuf/dynamic_message.h
-/usr/include/google/protobuf/empty.pb.h
-/usr/include/google/protobuf/empty.proto
-/usr/include/google/protobuf/extension_set.h
-/usr/include/google/protobuf/field_mask.pb.h
-/usr/include/google/protobuf/field_mask.proto
-/usr/include/google/protobuf/generated_enum_reflection.h
-/usr/include/google/protobuf/generated_enum_util.h
-/usr/include/google/protobuf/generated_message_reflection.h
-/usr/include/google/protobuf/generated_message_table_driven.h
-/usr/include/google/protobuf/generated_message_util.h
-/usr/include/google/protobuf/has_bits.h
-/usr/include/google/protobuf/io/coded_stream.h
-/usr/include/google/protobuf/io/gzip_stream.h
-/usr/include/google/protobuf/io/printer.h
-/usr/include/google/protobuf/io/strtod.h
-/usr/include/google/protobuf/io/tokenizer.h
-/usr/include/google/protobuf/io/zero_copy_stream.h
-/usr/include/google/protobuf/io/zero_copy_stream_impl.h
-/usr/include/google/protobuf/io/zero_copy_stream_impl_lite.h
-/usr/include/google/protobuf/map.h
-/usr/include/google/protobuf/map_entry.h
-/usr/include/google/protobuf/map_entry_lite.h
-/usr/include/google/protobuf/map_field.h
-/usr/include/google/protobuf/map_field_inl.h
-/usr/include/google/protobuf/map_field_lite.h
-/usr/include/google/protobuf/map_type_handler.h
-/usr/include/google/protobuf/message.h
-/usr/include/google/protobuf/message_lite.h
-/usr/include/google/protobuf/metadata.h
-/usr/include/google/protobuf/metadata_lite.h
-/usr/include/google/protobuf/reflection.h
-/usr/include/google/protobuf/reflection_ops.h
-/usr/include/google/protobuf/repeated_field.h
-/usr/include/google/protobuf/service.h
-/usr/include/google/protobuf/source_context.pb.h
-/usr/include/google/protobuf/source_context.proto
-/usr/include/google/protobuf/struct.pb.h
-/usr/include/google/protobuf/struct.proto
-/usr/include/google/protobuf/stubs/atomic_sequence_num.h
-/usr/include/google/protobuf/stubs/atomicops.h
-/usr/include/google/protobuf/stubs/atomicops_internals_arm64_gcc.h
-/usr/include/google/protobuf/stubs/atomicops_internals_arm_gcc.h
-/usr/include/google/protobuf/stubs/atomicops_internals_arm_qnx.h
-/usr/include/google/protobuf/stubs/atomicops_internals_generic_c11_atomic.h
-/usr/include/google/protobuf/stubs/atomicops_internals_generic_gcc.h
-/usr/include/google/protobuf/stubs/atomicops_internals_mips_gcc.h
-/usr/include/google/protobuf/stubs/atomicops_internals_power.h
-/usr/include/google/protobuf/stubs/atomicops_internals_ppc_gcc.h
-/usr/include/google/protobuf/stubs/atomicops_internals_solaris.h
-/usr/include/google/protobuf/stubs/atomicops_internals_tsan.h
-/usr/include/google/protobuf/stubs/atomicops_internals_x86_gcc.h
-/usr/include/google/protobuf/stubs/atomicops_internals_x86_msvc.h
-/usr/include/google/protobuf/stubs/bytestream.h
-/usr/include/google/protobuf/stubs/callback.h
-/usr/include/google/protobuf/stubs/casts.h
-/usr/include/google/protobuf/stubs/common.h
-/usr/include/google/protobuf/stubs/fastmem.h
-/usr/include/google/protobuf/stubs/hash.h
-/usr/include/google/protobuf/stubs/logging.h
-/usr/include/google/protobuf/stubs/macros.h
-/usr/include/google/protobuf/stubs/mutex.h
-/usr/include/google/protobuf/stubs/once.h
-/usr/include/google/protobuf/stubs/platform_macros.h
-/usr/include/google/protobuf/stubs/port.h
-/usr/include/google/protobuf/stubs/scoped_ptr.h
-/usr/include/google/protobuf/stubs/shared_ptr.h
-/usr/include/google/protobuf/stubs/singleton.h
-/usr/include/google/protobuf/stubs/status.h
-/usr/include/google/protobuf/stubs/stl_util.h
-/usr/include/google/protobuf/stubs/stringpiece.h
-/usr/include/google/protobuf/stubs/template_util.h
-/usr/include/google/protobuf/stubs/type_traits.h
-/usr/include/google/protobuf/text_format.h
-/usr/include/google/protobuf/timestamp.pb.h
-/usr/include/google/protobuf/timestamp.proto
-/usr/include/google/protobuf/type.pb.h
-/usr/include/google/protobuf/type.proto
-/usr/include/google/protobuf/unknown_field_set.h
-/usr/include/google/protobuf/util/delimited_message_util.h
-/usr/include/google/protobuf/util/field_comparator.h
-/usr/include/google/protobuf/util/field_mask_util.h
-/usr/include/google/protobuf/util/json_util.h
-/usr/include/google/protobuf/util/message_differencer.h
-/usr/include/google/protobuf/util/time_util.h
-/usr/include/google/protobuf/util/type_resolver.h
-/usr/include/google/protobuf/util/type_resolver_util.h
-/usr/include/google/protobuf/wire_format.h
-/usr/include/google/protobuf/wire_format_lite.h
-/usr/include/google/protobuf/wire_format_lite_inl.h
-/usr/include/google/protobuf/wrappers.pb.h
-/usr/include/google/protobuf/wrappers.proto
-/usr/include/include/nomnigraph/Converters/Dot.h
-/usr/include/include/nomnigraph/Generated/OpClasses.h
-/usr/include/include/nomnigraph/Generated/OpEnum.h
-/usr/include/include/nomnigraph/Generated/OpNames.h
-/usr/include/include/nomnigraph/Graph/Algorithms.h
-/usr/include/include/nomnigraph/Graph/BinaryMatchImpl.h
-/usr/include/include/nomnigraph/Graph/Graph.h
-/usr/include/include/nomnigraph/Graph/TarjansImpl.h
-/usr/include/include/nomnigraph/Representations/Compiler.h
-/usr/include/include/nomnigraph/Representations/ControlFlow.h
-/usr/include/include/nomnigraph/Representations/NeuralNet.h
-/usr/include/include/nomnigraph/Support/Casting.h
-/usr/include/include/nomnigraph/Support/Common.h
-/usr/include/include/nomnigraph/Support/Pointer.h
-/usr/include/include/nomnigraph/Transformations/Match.h
-/usr/include/onnx/checker.h
-/usr/include/onnx/common/array_ref.h
-/usr/include/onnx/common/assertions.h
-/usr/include/onnx/common/constants.h
-/usr/include/onnx/common/graph_node_list.h
-/usr/include/onnx/common/interned_strings.h
-/usr/include/onnx/common/ir.h
-/usr/include/onnx/common/ir_pb_converter.h
-/usr/include/onnx/common/status.h
-/usr/include/onnx/common/stl_backports.h
-/usr/include/onnx/common/tensor.h
-/usr/include/onnx/defs/data_type_utils.h
-/usr/include/onnx/defs/function.h
-/usr/include/onnx/defs/operator_sets-ml.h
-/usr/include/onnx/defs/operator_sets.h
-/usr/include/onnx/defs/schema.h
-/usr/include/onnx/defs/shape_inference.h
-/usr/include/onnx/onnx-operators.pb.h
-/usr/include/onnx/onnx-operators_onnx_c2.pb.h
-/usr/include/onnx/onnx-operators_pb.h
-/usr/include/onnx/onnx.pb.h
-/usr/include/onnx/onnx_onnx_c2.pb.h
-/usr/include/onnx/onnx_pb.h
-/usr/include/onnx/onnxifi.h
-/usr/include/onnx/onnxifi_loader.h
-/usr/include/onnx/optimizer/optimize.h
-/usr/include/onnx/optimizer/passes/eliminate_identity.h
-/usr/include/onnx/optimizer/passes/eliminate_nop_transpose.h
-/usr/include/onnx/optimizer/passes/eliminate_unused_initializer.h
-/usr/include/onnx/optimizer/passes/extract_constant_to_initializer.h
-/usr/include/onnx/optimizer/passes/fuse_add_bias_into_conv.h
-/usr/include/onnx/optimizer/passes/fuse_bn_into_conv.h
-/usr/include/onnx/optimizer/passes/fuse_consecutive_squeezes.h
-/usr/include/onnx/optimizer/passes/fuse_consecutive_transposes.h
-/usr/include/onnx/optimizer/passes/fuse_transpose_into_gemm.h
-/usr/include/onnx/optimizer/passes/lift_lexical_references.h
-/usr/include/onnx/optimizer/passes/nop.h
-/usr/include/onnx/optimizer/passes/optimize_pass.h
-/usr/include/onnx/optimizer/passes/split.h
-/usr/include/onnx/proto_utils.h
-/usr/include/onnx/py_utils.h
-/usr/include/onnx/shape_inference/implementation.h
-/usr/include/onnx/string_utils.h
-/usr/lib/libcaffe2.so
-/usr/lib/libcaffe2_observers.so
-/usr/lib64/cmake/protobuf/protobuf-config-version.cmake
-/usr/lib64/cmake/protobuf/protobuf-config.cmake
-/usr/lib64/cmake/protobuf/protobuf-module.cmake
-/usr/lib64/cmake/protobuf/protobuf-options.cmake
-/usr/lib64/cmake/protobuf/protobuf-targets-relwithdebinfo.cmake
-/usr/lib64/cmake/protobuf/protobuf-targets.cmake
-/usr/lib64/pkgconfig/protobuf-lite.pc
-/usr/lib64/pkgconfig/protobuf.pc
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/ATen.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/ATenGeneral.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/AccumulateType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/AlignOf.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Allocator.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/ArrayRef.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Backtrace.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUApplyUtils.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUByteStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUByteTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUByteType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUCharStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUCharTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUCharType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUDoubleStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUDoubleTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUDoubleType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUFixedAllocator.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUFloatStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUFloatTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUFloatType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUGeneral.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUGenerator.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUHalfStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUHalfTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUHalfType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUIntStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUIntTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUIntType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPULongStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPULongTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPULongType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUShortStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUShortTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CPUShortType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDAByteStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDAByteTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDAByteType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDACharStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDACharTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDACharType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDADoubleStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDADoubleTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDADoubleType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDAFloatStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDAFloatTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDAFloatType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDAGenerator.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDAHalfStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDAHalfTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDAHalfType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDAIntStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDAIntTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDAIntType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDALongStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDALongTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDALongType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDAShortStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDAShortTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDAShortType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CUDAStream.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/CheckGenerator.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Config.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Context.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/DLConvertor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Deprecated.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Device.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/DeviceGuard.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/DimVector.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Dispatch.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Error.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/ExpandUtils.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Formatting.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Functions.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Generator.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Half-inl.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Half.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Layout.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/MatrixRef.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/NativeFunctions.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/OptionsGuard.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Parallel.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/RegisterCUDA.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Registry.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Retainable.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Scalar.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/ScalarType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/ScalarTypeUtils.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/SmallVector.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/SparseCPUByteType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/SparseCPUCharType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/SparseCPUDoubleType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/SparseCPUFloatType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/SparseCPUIntType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/SparseCPULongType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/SparseCPUShortType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/SparseCUDAByteType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/SparseCUDACharType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/SparseCUDADoubleType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/SparseCUDAFloatType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/SparseCUDAIntType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/SparseCUDALongType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/SparseCUDAShortType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/SparseTensorImpl.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/SparseTensorRef.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Storage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/THLongStorageView.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Tensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/TensorAccessor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/TensorBase.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/TensorGeometry.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/TensorImpl.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/TensorMethods.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/TensorOperators.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/TensorOptions.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/TensorUtils.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Type.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/UndefinedTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/UndefinedType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/Utils.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/WrapDimUtils.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/WrapDimUtilsMulti.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/cuda/ATenCUDAGeneral.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/cuda/CUDAConfig.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/cuda/PinnedMemoryAllocator.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/cuda/detail/CUDAHooks.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/cudnn/Descriptors.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/cudnn/Exceptions.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/cudnn/Handles.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/cudnn/Types.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/cudnn/Utils.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/cudnn/cudnn-wrapper.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/detail/CUDAHooksInterface.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/detail/UniqueVoidPtr.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/detail/VariableHooksInterface.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/dlpack.h
+/usr/lib/python3.7/site-packages/torch/lib/include/ATen/optional.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/TH.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THAllocator.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THBlas.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THDiskFile.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THFile.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THFilePrivate.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THGeneral.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THGenerateAllTypes.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THGenerateByteType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THGenerateCharType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THGenerateDoubleType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THGenerateFloatType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THGenerateFloatTypes.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THGenerateHalfType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THGenerateIntType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THGenerateIntTypes.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THGenerateLongType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THGenerateShortType.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THHalf.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THLapack.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THLogAdd.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THMath.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THMemoryFile.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THRandom.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THSize.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THTensorApply.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THTensorDimApply.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/THVector.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/generic/THBlas.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/generic/THLapack.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/generic/THStorage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/generic/THStorageCopy.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/generic/THTensor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/generic/THTensorConv.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/generic/THTensorCopy.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/generic/THTensorLapack.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/generic/THTensorMath.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/generic/THTensorRandom.h
+/usr/lib/python3.7/site-packages/torch/lib/include/TH/generic/THVector.h
+/usr/lib/python3.7/site-packages/torch/lib/include/THNN/Reduction.h
+/usr/lib/python3.7/site-packages/torch/lib/include/THNN/THNN.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/attr.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/buffer_info.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/cast.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/chrono.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/common.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/complex.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/detail/class.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/detail/common.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/detail/descr.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/detail/init.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/detail/internals.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/detail/typeid.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/eigen.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/embed.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/eval.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/functional.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/iostream.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/numpy.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/operators.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/options.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/pybind11.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/pytypes.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/stl.h
+/usr/lib/python3.7/site-packages/torch/lib/include/pybind11/stl_bind.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/DataLoader.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/Device.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/Dtype.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/DynamicTypes.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/Exceptions.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/Generator.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/Layout.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/Module.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/PtrWrapper.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/PythonTypes.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/Size.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/Storage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/THP.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/THP_API.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/THP_export.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/Types.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/assertions.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/anomaly_mode.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/autograd.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/edge.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/engine.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/function.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/function_hook.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/grad_mode.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/input_buffer.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/profiler.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/python_anomaly_mode.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/python_cpp_function.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/python_engine.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/python_function.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/python_hook.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/python_legacy_variable.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/python_variable.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/python_variable_indexing.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/saved_variable.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/symbolic.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/type_and_shape.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/variable.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/autograd/variable_version.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/byte_order.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/copy_utils.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/cuda/Module.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/cuda/Storage.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/cuda/Stream.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/cuda/THCP.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/cuda/comm.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/cuda/cuda_check.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/cuda/device_set.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/cuda/nccl.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/cuda/override_macros.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/cuda/python_comm.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/cuda/python_nccl.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/cuda/restore_macros.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/cuda/serialization.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/cuda/undef_macros.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/cuda/utils.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/finalizer.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/argument_spec.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/attributes.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/autodiff.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/code_template.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/export.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/function_schema.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/fusion_compiler.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/generic_if.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/graph_executor.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/graph_node_list.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/import.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/init.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/interned_strings.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/interpreter.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/ir.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/ivalue.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/named_value.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/operator.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/pybind.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/pybind_utils.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/python_arg_flatten.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/python_ir.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/python_tracer.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/resource_guard.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/source_location.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/stack.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/symbolic_variable.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/tensor_conversions.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/tracer.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/tracer_state.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/type.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/variable_flags.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/jit/variable_tensor_list.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/python_headers.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/serialization.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/torch.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/auto_gil.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/auto_stream.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/auto_unique_ptr.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/cuda_enabled.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/cuda_lazy_init.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/disallow_copy.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/functional.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/hash.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/invalid_arguments.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/memory.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/numpy_stub.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/object_ptr.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/pybind.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/python_arg_parser.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/python_compat.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/python_numbers.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/python_scalars.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/python_strings.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/python_stub.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/python_tuples.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/tensor_apply.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/tensor_conversion_dispatch.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/tensor_dtypes.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/tensor_flatten.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/tensor_layouts.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/tensor_list.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/tensor_new.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/tensor_numpy.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/tensor_types.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/tuple_parser.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/utils/variadic.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/csrc/variable_tensor_functions.h
+/usr/lib/python3.7/site-packages/torch/lib/include/torch/torch.h
 
 %files license
-%defattr(-,root,root,-)
+%defattr(0644,root,root,0755)
 /usr/share/package-licenses/pytorch/LICENSE
 /usr/share/package-licenses/pytorch/caffe2_contrib_cuda-convnet2_LICENSE
 /usr/share/package-licenses/pytorch/caffe2_mobile_contrib_libopencl-stub_LICENSE
@@ -1128,6 +663,7 @@ popd
 /usr/share/package-licenses/pytorch/third_party_benchmark_LICENSE
 /usr/share/package-licenses/pytorch/third_party_catch_LICENSE.txt
 /usr/share/package-licenses/pytorch/third_party_cereal_LICENSE
+/usr/share/package-licenses/pytorch/third_party_cereal_include_cereal_external_rapidxml_license.txt
 /usr/share/package-licenses/pytorch/third_party_cpuinfo_LICENSE
 /usr/share/package-licenses/pytorch/third_party_cub_LICENSE.TXT
 /usr/share/package-licenses/pytorch/third_party_eigen_COPYING.BSD
