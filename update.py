@@ -18,8 +18,6 @@ def fixup_makefile(package):
                               check=True, capture_output=True)
         for line in proc.stdout.decode('utf-8').splitlines():
             sha, path, _ = line.split()
-            if 'onnx' in path or 'protobuf' in path:
-                continue
             subm = os.path.join(package, path)
             cmd = f"git -C {subm} remote get-url origin".split()
             uproc = subprocess.run(cmd, check=True, capture_output=True)

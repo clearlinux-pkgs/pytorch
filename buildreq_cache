@@ -1,8 +1,10 @@
-0.4.1
+1.0.0
+PyYAML
 eigen-dev
 gflags-dev
 glog-dev
 leveldb
 lmdb-dev
 numactl-dev
+python3-dev
 snappy-dev
