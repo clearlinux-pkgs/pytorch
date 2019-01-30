@@ -1,1 +1,2 @@
 export NO_CUDA=1
+export USE_OPENMP=ON

@@ -4,7 +4,7 @@
 #
 Name     : pytorch
 Version  : 1.0.0
-Release  : 3
+Release  : 4
 URL      : https://github.com/pytorch/pytorch/archive/v1.0.0.tar.gz
 Source0  : https://github.com/pytorch/pytorch/archive/v1.0.0.tar.gz
 Source1  : https://github.com/ARM-software/ComputeLibrary/archive/292227986edb37b01061afcad6df18ba9d6ccbeb.tar.gz
@@ -39,6 +39,7 @@ Summary  : Python 3.4 Enum backported to 3.3, 3.2, 3.1, 2.7, 2.6, 2.5, and 2.4
 Group    : Development/Tools
 License  : Apache-2.0 BSD-2-Clause BSD-3-Clause BSD-3-Clause-Attribution BSD-3-Clause-Clear BSL-1.0 GPL-2.0 GPL-3.0 LGPL-2.1 MIT MPL-2.0 MPL-2.0-no-copyleft-exception Unlicense
 Requires: pytorch-bin = %{version}-%{release}
+Requires: pytorch-data = %{version}-%{release}
 Requires: pytorch-license = %{version}-%{release}
 Requires: pytorch-python = %{version}-%{release}
 Requires: pytorch-python3 = %{version}-%{release}
@@ -59,18 +60,25 @@ BuildRequires : buildreq-distutils3
 BuildRequires : buildreq-golang
 BuildRequires : buildreq-meson
 BuildRequires : buildreq-scons
+BuildRequires : eigen-dev
 BuildRequires : enum34
+BuildRequires : gflags-dev
+BuildRequires : glog-dev
+BuildRequires : leveldb
+BuildRequires : lmdb-dev
 BuildRequires : mkl-dnn-dev
 BuildRequires : numactl-dev
 BuildRequires : numpy
 BuildRequires : onnx
 BuildRequires : opcodes
+BuildRequires : openmpi-dev
 BuildRequires : pluggy
 BuildRequires : py-python
 BuildRequires : pytest
 BuildRequires : python3-dev
 BuildRequires : setuptools
 BuildRequires : six
+BuildRequires : snappy-dev
 BuildRequires : tox
 BuildRequires : virtualenv
 
@@ -86,16 +94,26 @@ BuildRequires : virtualenv
 %package bin
 Summary: bin components for the pytorch package.
 Group: Binaries
+Requires: pytorch-data = %{version}-%{release}
 Requires: pytorch-license = %{version}-%{release}
 
 %description bin
 bin components for the pytorch package.
 
 
+%package data
+Summary: data components for the pytorch package.
+Group: Data
+
+%description data
+data components for the pytorch package.
+
+
 %package dev
 Summary: dev components for the pytorch package.
 Group: Development
 Requires: pytorch-bin = %{version}-%{release}
+Requires: pytorch-data = %{version}-%{release}
 Provides: pytorch-devel = %{version}-%{release}
 
 %description dev
@@ -246,12 +264,13 @@ cp -r %{_topdir}/BUILD/zstd-aec56a52fbab207fc639a1937d1e708a282edca8/* %{_topdir
 %build
 ## build_prepend content
 export NO_CUDA=1
+export USE_OPENMP=ON
 ## build_prepend end
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1548873892
+export SOURCE_DATE_EPOCH=1548878131
 export MAKEFLAGS=%{?_smp_mflags}
 python3 setup.py build
 
@@ -322,6 +341,9 @@ echo ----[ mark ]----
 %defattr(-,root,root,-)
 /usr/bin/convert-caffe2-to-onnx
 /usr/bin/convert-onnx-to-caffe2
+
+%files data
+%defattr(-,root,root,-)
 
 %files dev
 %defattr(-,root,root,-)
