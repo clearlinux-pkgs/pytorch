@@ -4,7 +4,7 @@
 #
 Name     : pytorch
 Version  : 1.0.0
-Release  : 4
+Release  : 5
 URL      : https://github.com/pytorch/pytorch/archive/v1.0.0.tar.gz
 Source0  : https://github.com/pytorch/pytorch/archive/v1.0.0.tar.gz
 Source1  : https://github.com/ARM-software/ComputeLibrary/archive/292227986edb37b01061afcad6df18ba9d6ccbeb.tar.gz
