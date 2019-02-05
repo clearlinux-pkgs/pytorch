@@ -2,3 +2,11 @@
 # picked up automatically. One name per line, no whitespace.
 mkl-dnn-dev
 openmpi-dev
+PyYAML
+openblas-dev
+llvm
+eigen-dev
+eigen
+pybind11
+protobuf-dev
+pybind11-dev
