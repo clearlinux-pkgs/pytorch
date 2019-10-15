@@ -3,6 +3,7 @@
 import configparser
 import os
 import subprocess
+import shutil
 import sys
 
 
@@ -11,7 +12,7 @@ def git_clone(repo, tag):
                    check=True)
 
 
-def fixup_makefile(package):
+def get_path_urls(package):
     path_urls = ""
     try:
         proc = subprocess.run(f"git -C {package} submodule status".split(),
@@ -19,23 +20,34 @@ def fixup_makefile(package):
         for line in proc.stdout.decode('utf-8').splitlines():
             sha, path, _ = line.split()
             subm = os.path.join(package, path)
+            path_urls = get_path_urls(subm) + path_urls
             cmd = f"git -C {subm} remote get-url origin".split()
             uproc = subprocess.run(cmd, check=True, capture_output=True)
             url = uproc.stdout.decode('utf-8').strip()
             if url[-4:] == ".git":
                 url = url[:-4]
             commit_url = url + f"/archive/{sha}.tar.gz"
-            path_urls += f"{commit_url} {path} "
+            if os.path.split(package)[0]:
+                path_urls = f"{commit_url} {subm.split('/', maxsplit=1)[1]} " + path_urls
+            else:
+                path_urls = f"{commit_url} {path} " + path_urls
+            if not os.path.isfile(f"{sha}.tar.gz"):
+                subprocess.run(f"curl -L -O {commit_url}".split())
     except Exception as e:
         print(f"unable to get submodule details for {package}: {e}")
         sys.exit(1)
-    path_urls = path_urls.strip()
+
+    return path_urls
+
+
+def fixup_makefile(package):
+    path_urls = get_path_urls(package).strip()
     mcontent = []
     with open("Makefile", "r") as mfile:
         mcontent = mfile.readlines()
     for idx, line in enumerate(mcontent):
         if line.startswith("ARCHIVES"):
-            mcontent[idx] = f"ARCHIVES = {path_urls}"
+            mcontent[idx] = f"ARCHIVES = {path_urls}\n"
             break
     with open("Makefile", "w") as mfile:
         mfile.writelines(mcontent)
@@ -45,7 +57,9 @@ def setup_archives(tag):
     conf = configparser.ConfigParser()
     try:
         conf.read("options.conf")
-        # git_clone(conf["package"]["giturl"], tag)
+        if not os.path.isfile(os.path.join(conf['package']['name'], f".git/refs/heads/{tag}")):
+            shutil.rmtree(conf['package']['name'], ignore_errors=True)
+            git_clone(conf["package"]["giturl"], tag)
     except Exception as e:
         print(f"unable to grab submodule archives: {e}")
         sys.exit(1)

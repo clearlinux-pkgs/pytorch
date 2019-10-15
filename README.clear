@@ -1,0 +1,3 @@
+How to update:
+- Run update.py $TAG to get newest submodules
+- Run make autospec
