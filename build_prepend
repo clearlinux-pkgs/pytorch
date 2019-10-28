@@ -1,2 +1,3 @@
 export USE_CUDA=0
 export USE_CUDNN=0
+export REL_WITH_DEB_INFO=1

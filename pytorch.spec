@@ -4,7 +4,7 @@
 #
 Name     : pytorch
 Version  : 1.3.0
-Release  : 11
+Release  : 12
 URL      : https://github.com/pytorch/pytorch/archive/v1.3.0.tar.gz
 Source0  : https://github.com/pytorch/pytorch/archive/v1.3.0.tar.gz
 Source1  : https://github.com/01org/tbb/archive/a51a90bc609bb73db8ea13841b5cf7aa4344d4a9.tar.gz
@@ -53,7 +53,7 @@ Source43  : https://github.com/wjakob/clang-cindex-python3/archive/6a00cbc4a9b8e
 Source44  : https://github.com/wjakob/clang-cindex-python3/archive/6a00cbc4a9b8e68b71caf7f774b3f9c753ae84d5.tar.gz
 Summary  : Python 3.4 Enum backported to 3.3, 3.2, 3.1, 2.7, 2.6, 2.5, and 2.4
 Group    : Development/Tools
-License  : Apache-2.0 BSD-2-Clause BSD-3-Clause BSD-3-Clause-Attribution BSD-3-Clause-LBNL BSL-1.0 GPL-2.0 GPL-3.0 LGPL-2.1 MIT MPL-2.0 MPL-2.0-no-copyleft-exception NCSA Unlicense
+License  : Apache-2.0 BSD-2-Clause BSD-3-Clause BSD-3-Clause-Attribution BSD-3-Clause-LBNL BSL-1.0 GPL-2.0 GPL-3.0 LGPL-2.1 MIT MPL-2.0 MPL-2.0-no-copyleft-exception NCSA Unlicense Zlib
 Requires: pytorch-bin = %{version}-%{release}
 Requires: pytorch-license = %{version}-%{release}
 Requires: pytorch-python = %{version}-%{release}
@@ -95,6 +95,7 @@ BuildRequires : requests
 BuildRequires : setuptools
 BuildRequires : six
 BuildRequires : typing
+BuildRequires : util-linux
 
 %description
 ========================================
@@ -334,12 +335,13 @@ cp -r %{_topdir}/BUILD/fbjni-dc916917e1500527f83bc24b1767a123d6549ca0/* %{_topdi
 ## build_prepend content
 export USE_CUDA=0
 export USE_CUDNN=0
+export REL_WITH_DEB_INFO=1
 ## build_prepend end
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1571181650
+export SOURCE_DATE_EPOCH=1572297782
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$CFLAGS -fno-lto "
@@ -378,6 +380,7 @@ cp %{_builddir}/pytorch-1.3.0/third_party/eigen/COPYING.MPL2 %{buildroot}/usr/sh
 cp %{_builddir}/pytorch-1.3.0/third_party/eigen/COPYING.README %{buildroot}/usr/share/package-licenses/pytorch/a7584db2e76a50884b3fe13360f2e6a354f5bedf
 cp %{_builddir}/pytorch-1.3.0/third_party/eigen/bench/btl/COPYING %{buildroot}/usr/share/package-licenses/pytorch/0adba118df234d6b733bf662d159b55846231417
 cp %{_builddir}/pytorch-1.3.0/third_party/fbgemm/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/9aaa609318eb08d53c26973a2a459f286d62cc02
+cp %{_builddir}/pytorch-1.3.0/third_party/fbgemm/third_party/asmjit/LICENSE.md %{buildroot}/usr/share/package-licenses/pytorch/590e546bd6ac1b7b8a4f27dd6316af44b5310110
 cp %{_builddir}/pytorch-1.3.0/third_party/fbgemm/third_party/cpuinfo/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/35e0eabed75468b40ceee235b7c100c5f01c1449
 cp %{_builddir}/pytorch-1.3.0/third_party/fbgemm/third_party/cpuinfo/deps/clog/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/aef1ae9e4471bbac8a19a56ae105e87602ab02bc
 cp %{_builddir}/pytorch-1.3.0/third_party/fbgemm/third_party/googletest/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
@@ -1555,6 +1558,7 @@ echo ----[ mark ]----
 /usr/share/package-licenses/pytorch/4d92b5c714b113c0cb49db12d7a5cf53b17fc18a
 /usr/share/package-licenses/pytorch/5568c1e6f63c3c11e6090d1b5436596617959dba
 /usr/share/package-licenses/pytorch/58293afc205f8fde63dab717b6f2de6e59bcc923
+/usr/share/package-licenses/pytorch/590e546bd6ac1b7b8a4f27dd6316af44b5310110
 /usr/share/package-licenses/pytorch/5a09fe8ab2f714dc1fa204fc261eceb8d82962e8
 /usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
 /usr/share/package-licenses/pytorch/5c2d4e095dd711104c392378646b1655dac87067
