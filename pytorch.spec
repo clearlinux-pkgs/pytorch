@@ -4,7 +4,7 @@
 #
 Name     : pytorch
 Version  : 1.3.0
-Release  : 15
+Release  : 16
 URL      : https://github.com/pytorch/pytorch/archive/v1.3.0.tar.gz
 Source0  : https://github.com/pytorch/pytorch/archive/v1.3.0.tar.gz
 Source1  : https://github.com/01org/tbb/archive/a51a90bc609bb73db8ea13841b5cf7aa4344d4a9.tar.gz
@@ -67,17 +67,13 @@ Requires: setuptools
 Requires: six
 Requires: typing
 BuildRequires : PyYAML
-BuildRequires : apache-maven
 BuildRequires : buildreq-cmake
 BuildRequires : buildreq-distutils3
 BuildRequires : buildreq-golang
 BuildRequires : buildreq-meson
-BuildRequires : buildreq-mvn
-BuildRequires : buildreq-php
 BuildRequires : doxygen
 BuildRequires : eigen
 BuildRequires : eigen-dev
-BuildRequires : gradle
 BuildRequires : llvm
 BuildRequires : mkl-dnn-dev
 BuildRequires : numactl-dev
@@ -344,7 +340,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1573855254
+export SOURCE_DATE_EPOCH=1582326368
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$CFLAGS -fno-lto "
