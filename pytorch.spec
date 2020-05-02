@@ -4,7 +4,7 @@
 #
 Name     : pytorch
 Version  : 1.3.0
-Release  : 16
+Release  : 17
 URL      : https://github.com/pytorch/pytorch/archive/v1.3.0.tar.gz
 Source0  : https://github.com/pytorch/pytorch/archive/v1.3.0.tar.gz
 Source1  : https://github.com/01org/tbb/archive/a51a90bc609bb73db8ea13841b5cf7aa4344d4a9.tar.gz
@@ -51,7 +51,7 @@ Source41  : https://github.com/shibatch/sleef/archive/7f523de651585fe25cade462ef
 Source42  : https://github.com/wjakob/clang-cindex-python3/archive/6a00cbc4a9b8e68b71caf7f774b3f9c753ae84d5.tar.gz
 Source43  : https://github.com/wjakob/clang-cindex-python3/archive/6a00cbc4a9b8e68b71caf7f774b3f9c753ae84d5.tar.gz
 Source44  : https://github.com/wjakob/clang-cindex-python3/archive/6a00cbc4a9b8e68b71caf7f774b3f9c753ae84d5.tar.gz
-Summary  : Python 3.4 Enum backported to 3.3, 3.2, 3.1, 2.7, 2.6, 2.5, and 2.4
+Summary  : Open source machine learning framework
 Group    : Development/Tools
 License  : Apache-2.0 BSD-2-Clause BSD-3-Clause BSD-3-Clause-Attribution BSD-3-Clause-LBNL BSL-1.0 GPL-2.0 GPL-3.0 LGPL-2.1 MIT MPL-2.0 MPL-2.0-no-copyleft-exception NCSA Unlicense Zlib
 Requires: pytorch-bin = %{version}-%{release}
@@ -65,12 +65,9 @@ Requires: opcodes
 Requires: requests
 Requires: setuptools
 Requires: six
-Requires: typing
 BuildRequires : PyYAML
 BuildRequires : buildreq-cmake
 BuildRequires : buildreq-distutils3
-BuildRequires : buildreq-golang
-BuildRequires : buildreq-meson
 BuildRequires : doxygen
 BuildRequires : eigen
 BuildRequires : eigen-dev
@@ -90,18 +87,14 @@ BuildRequires : python3-dev
 BuildRequires : requests
 BuildRequires : setuptools
 BuildRequires : six
-BuildRequires : typing
 BuildRequires : util-linux
 Patch1: 0001-py3.8-compat.patch
 
 %description
-========================================
-        
-        An enumeration is a set of symbolic names (members) bound to unique, constant
-        values.  Within an enumeration, the members can be compared by identity, and
-        the enumeration itself can be iterated over.
-        
-            from enum import Enum
+PyTorch is an open source machine learning library based on the Torch library,
+used for applications such as computer vision and natural language processing,
+primarily developed by Facebook's AI Research lab. It is free and open-source
+software released under the Modified BSD license.
 
 %package bin
 Summary: bin components for the pytorch package.
@@ -340,11 +333,11 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1582326368
+export SOURCE_DATE_EPOCH=1588387873
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
-export FCFLAGS="$CFLAGS -fno-lto "
-export FFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$FFLAGS -fno-lto "
+export FFLAGS="$FFLAGS -fno-lto "
 export CXXFLAGS="$CXXFLAGS -fno-lto "
 export MAKEFLAGS=%{?_smp_mflags}
 python3 setup.py build
@@ -356,80 +349,77 @@ rm -rf %{buildroot}
 export NO_CUDA=1
 ## install_prepend end
 mkdir -p %{buildroot}/usr/share/package-licenses/pytorch
+cp %{_builddir}/ARM_NEON_2_x86_SSE-97a126f08ce318023be604d03f88bf0820a9464a/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/431443c5e39f2a2f7514b387082e5ac2877923bd
+cp %{_builddir}/FBGEMM-7dfeddb5ba976f47471275b2468909dfd9b577e1/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/9aaa609318eb08d53c26973a2a459f286d62cc02
+cp %{_builddir}/FP16-febbb1c163726b5db24bed55cc9dc42529068997/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/39e35ac9d71ad3567cdc9e06f0bfb0af0ab107ea
+cp %{_builddir}/FXdiv-b742d1143724d646cd0f914646f1240eacf5bd73/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/69f20049c4145e8bb141e04c9d2b37efd884b876
+cp %{_builddir}/NNPACK-c039579abe21f5756e0f0e45e8e767adccc11852/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/edc22eb381c3e88088ddc22d7ab2e9559e170338
+cp %{_builddir}/PeachPy-07d8fde8ac45d7705129475c0f94ed8925b93473/LICENSE.rst %{buildroot}/usr/share/package-licenses/pytorch/5c2d4e095dd711104c392378646b1655dac87067
+cp %{_builddir}/QNNPACK-7d2a4e9931a82adc3814275b6219a03e24e36b4c/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/c88e23958e28e21ce121fac290f5146664926dfa
+cp %{_builddir}/QNNPACK-7d2a4e9931a82adc3814275b6219a03e24e36b4c/deps/clog/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/aef1ae9e4471bbac8a19a56ae105e87602ab02bc
+cp %{_builddir}/asmjit-4da474ac9aa2689e88d5e40a2f37628f302d7e3c/LICENSE.md %{buildroot}/usr/share/package-licenses/pytorch/590e546bd6ac1b7b8a4f27dd6316af44b5310110
+cp %{_builddir}/benchmark-505be96ab23056580a3a2315abba048f4428b04e/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/2b8b815229aa8a61e483fb4ba0588b8b6c491890
+cp %{_builddir}/benchmark-5b7683f49e1e9223cf9927b24f6fd3d6bd82e3f8/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/2b8b815229aa8a61e483fb4ba0588b8b6c491890
+cp %{_builddir}/benchmark-e776aa0275e293707b6a0901e0e8d8a8a3679508/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/2b8b815229aa8a61e483fb4ba0588b8b6c491890
+cp %{_builddir}/clang-cindex-python3-6a00cbc4a9b8e68b71caf7f774b3f9c753ae84d5/LICENSE.TXT %{buildroot}/usr/share/package-licenses/pytorch/0ebae4fcb66d6688d40b27451ac84cf5b5c8862a
+cp %{_builddir}/cpuinfo-89fe1695edf9ee14c22f815f24bac45577a4f135/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/35e0eabed75468b40ceee235b7c100c5f01c1449
+cp %{_builddir}/cpuinfo-89fe1695edf9ee14c22f815f24bac45577a4f135/deps/clog/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/aef1ae9e4471bbac8a19a56ae105e87602ab02bc
+cp %{_builddir}/cpuinfo-d5e37adf1406cf899d7d9ec1d317c47506ccb970/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/35e0eabed75468b40ceee235b7c100c5f01c1449
+cp %{_builddir}/cpuinfo-d5e37adf1406cf899d7d9ec1d317c47506ccb970/deps/clog/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/aef1ae9e4471bbac8a19a56ae105e87602ab02bc
+cp %{_builddir}/cub-285aeebaa34b0e8a7670867a2e66c1a52d998d6a/LICENSE.TXT %{buildroot}/usr/share/package-licenses/pytorch/eb258b43ba6094e538bf34bd307564c66c363bcb
+cp %{_builddir}/eigen-git-mirror-d41dc4dd74acce21fb210e7625d5d135751fa9e5/COPYING.BSD %{buildroot}/usr/share/package-licenses/pytorch/8fa159b3e41e0a44e10ea224cbb83e66ae02885e
+cp %{_builddir}/eigen-git-mirror-d41dc4dd74acce21fb210e7625d5d135751fa9e5/COPYING.GPL %{buildroot}/usr/share/package-licenses/pytorch/8624bcdae55baeef00cd11d5dfcfa60f68710a02
+cp %{_builddir}/eigen-git-mirror-d41dc4dd74acce21fb210e7625d5d135751fa9e5/COPYING.LGPL %{buildroot}/usr/share/package-licenses/pytorch/01a6b4bf79aca9b556822601186afab86e8c4fbf
+cp %{_builddir}/eigen-git-mirror-d41dc4dd74acce21fb210e7625d5d135751fa9e5/COPYING.MINPACK %{buildroot}/usr/share/package-licenses/pytorch/df73e10dcfd2d05667e6fe85cabe5dfe3c984727
+cp %{_builddir}/eigen-git-mirror-d41dc4dd74acce21fb210e7625d5d135751fa9e5/COPYING.MPL2 %{buildroot}/usr/share/package-licenses/pytorch/9744cedce099f727b327cd9913a1fdc58a7f5599
+cp %{_builddir}/eigen-git-mirror-d41dc4dd74acce21fb210e7625d5d135751fa9e5/COPYING.README %{buildroot}/usr/share/package-licenses/pytorch/a7584db2e76a50884b3fe13360f2e6a354f5bedf
+cp %{_builddir}/eigen-git-mirror-d41dc4dd74acce21fb210e7625d5d135751fa9e5/bench/btl/COPYING %{buildroot}/usr/share/package-licenses/pytorch/0adba118df234d6b733bf662d159b55846231417
+cp %{_builddir}/enum34-4cfedc426c4e2fc52e3f5c2b4297e15ed8d6b8c7/enum/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/7dda499e7ea656d8e8901e525db809eacb487d18
+cp %{_builddir}/fbjni-dc916917e1500527f83bc24b1767a123d6549ca0/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/bd563fc6970b3d62da23c7fd8668c3c2c9f45967
+cp %{_builddir}/foxi-8f74bc4df3a4cfc69b1a3eadf62aa29d9961c72d/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/71a4c9500a82e883588b556505ca06deca7d2f2c
+cp %{_builddir}/gemmlowp-3fb5c176c17c765a3492cd2f0321b0dab712f350/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/2b8b815229aa8a61e483fb4ba0588b8b6c491890
+cp %{_builddir}/gloo-ca528e32fea9ca8f2b16053cff17160290fc84ce/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5568c1e6f63c3c11e6090d1b5436596617959dba
+cp %{_builddir}/gloo-ca528e32fea9ca8f2b16053cff17160290fc84ce/gloo/transport/uv/LICENSE.uvw %{buildroot}/usr/share/package-licenses/pytorch/8fd9441f6f308eebe7bc1f26c214ef210741d55b
+cp %{_builddir}/googletest-0fc5466dbb9e623029b1ada539717d10bd45e99e/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
+cp %{_builddir}/googletest-0fc5466dbb9e623029b1ada539717d10bd45e99e/googlemock/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
+cp %{_builddir}/googletest-0fc5466dbb9e623029b1ada539717d10bd45e99e/googlemock/scripts/generator/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/1d4719e04eaa4909ab5a59ef5cb04d2a5517716e
+cp %{_builddir}/googletest-0fc5466dbb9e623029b1ada539717d10bd45e99e/googletest/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
+cp %{_builddir}/googletest-2fe3bd994b3189899d93f1d5a881e725e046fdc2/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
+cp %{_builddir}/googletest-2fe3bd994b3189899d93f1d5a881e725e046fdc2/googlemock/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
+cp %{_builddir}/googletest-2fe3bd994b3189899d93f1d5a881e725e046fdc2/googlemock/scripts/generator/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/1d4719e04eaa4909ab5a59ef5cb04d2a5517716e
+cp %{_builddir}/googletest-2fe3bd994b3189899d93f1d5a881e725e046fdc2/googletest/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
+cp %{_builddir}/googletest-c3bb0ee2a63279a803aaad956b9b26d74bf9e6e2/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
+cp %{_builddir}/googletest-c3bb0ee2a63279a803aaad956b9b26d74bf9e6e2/googlemock/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
+cp %{_builddir}/googletest-c3bb0ee2a63279a803aaad956b9b26d74bf9e6e2/googlemock/scripts/generator/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/1d4719e04eaa4909ab5a59ef5cb04d2a5517716e
+cp %{_builddir}/googletest-c3bb0ee2a63279a803aaad956b9b26d74bf9e6e2/googletest/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
+cp %{_builddir}/ideep-78eafa5d231924e3d525d4dc46de880015257618/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/355a7114eddceb5261ed5c17567e98c7e2994a6e
+cp %{_builddir}/ios-cmake-8abaed637d56f1337d6e1d2c4026e25c1eade724/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/90de2d422ac2f17ed1e848a2fdeae1a174637713
+cp %{_builddir}/mkl-dnn-0125f28c61c1f822fd48570b4c1066f96fcb9b2e/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/b62656e08adcf16ce153c1df3e835ad3afb5f9ed
+cp %{_builddir}/mkl-dnn-0125f28c61c1f822fd48570b4c1066f96fcb9b2e/src/cpu/xbyak/COPYRIGHT %{buildroot}/usr/share/package-licenses/pytorch/990f2a776789e9560c85fc1ddf2121d382223354
+cp %{_builddir}/mkl-dnn-0125f28c61c1f822fd48570b4c1066f96fcb9b2e/tests/gtests/gtest/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
+cp %{_builddir}/nccl-7c72dee660e4d055b81721dd6b03e4e1c0a983cf/LICENSE.txt %{buildroot}/usr/share/package-licenses/pytorch/4d92b5c714b113c0cb49db12d7a5cf53b17fc18a
+cp %{_builddir}/nccl-7c72dee660e4d055b81721dd6b03e4e1c0a983cf/pkg/debian/copyright %{buildroot}/usr/share/package-licenses/pytorch/4d92b5c714b113c0cb49db12d7a5cf53b17fc18a
+cp %{_builddir}/onnx-034921bd574cc84906b7996c07873454b7dd4135/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/72abeb57e64fb30074f90a0cf3238a35f63d8a6d
+cp %{_builddir}/onnx-765f5ee823a67a866f4bd28a9860e81f3c811ce8/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/e8438148b753bca339b6cc352f19cf4260806351
+cp %{_builddir}/onnx-tensorrt-cb3d8066f20e6bca306454934d09d6abd826264a/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/2093bd4f3f186c655497a3e5b0f969fed37e8227
+cp %{_builddir}/protobuf-48cb18e5c419ddd23d9badcfe4e9df7bde1979b2/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/1b5a14d06dd784e88dadc5c68344be2dc13875b6
+cp %{_builddir}/psimd-90a938f30ba414ada2f4b00674ee9631d7d85e19/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/58293afc205f8fde63dab717b6f2de6e59bcc923
+cp %{_builddir}/pthreadpool-13da0b4c21d17f94150713366420baaf1b5a46f4/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/95c7878c2e84c75dc8bb43ea21ac1798e2b261c1
+cp %{_builddir}/pybind11-09f082940113661256310e3f4811aa7261a9fa05/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/a33b61f04391a38904373d020e7fbabf211383f6
+cp %{_builddir}/pybind11-25abf7efba0b2990f5a6dfb0a31bc65c0f2f4d17/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/a33b61f04391a38904373d020e7fbabf211383f6
+cp %{_builddir}/pybind11-a1041190c8b8ff0cd9e2f0752248ad5e3789ea0c/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/71a7f368f90789db807331860cb72d10abdb4acb
 cp %{_builddir}/pytorch-1.3.0/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/bd563fc6970b3d62da23c7fd8668c3c2c9f45967
 cp %{_builddir}/pytorch-1.3.0/NOTICE %{buildroot}/usr/share/package-licenses/pytorch/5cbbf80315343b2e95db2878824c25374d855122
-cp %{_builddir}/pytorch-1.3.0/android/libs/fbjni/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/bd563fc6970b3d62da23c7fd8668c3c2c9f45967
 cp %{_builddir}/pytorch-1.3.0/aten/src/ATen/native/quantized/cpu/qnnpack/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/c88e23958e28e21ce121fac290f5146664926dfa
 cp %{_builddir}/pytorch-1.3.0/aten/src/ATen/native/quantized/cpu/qnnpack/deps/clog/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/aef1ae9e4471bbac8a19a56ae105e87602ab02bc
 cp %{_builddir}/pytorch-1.3.0/caffe2/mobile/contrib/libopencl-stub/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/24944bf7920108f5a4790e6071c32e9102760c37
-cp %{_builddir}/pytorch-1.3.0/third_party/FP16/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/39e35ac9d71ad3567cdc9e06f0bfb0af0ab107ea
-cp %{_builddir}/pytorch-1.3.0/third_party/FXdiv/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/69f20049c4145e8bb141e04c9d2b37efd884b876
-cp %{_builddir}/pytorch-1.3.0/third_party/NNPACK/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/edc22eb381c3e88088ddc22d7ab2e9559e170338
-cp %{_builddir}/pytorch-1.3.0/third_party/QNNPACK/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/c88e23958e28e21ce121fac290f5146664926dfa
-cp %{_builddir}/pytorch-1.3.0/third_party/QNNPACK/deps/clog/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/aef1ae9e4471bbac8a19a56ae105e87602ab02bc
-cp %{_builddir}/pytorch-1.3.0/third_party/benchmark/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/2b8b815229aa8a61e483fb4ba0588b8b6c491890
-cp %{_builddir}/pytorch-1.3.0/third_party/cpuinfo/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/35e0eabed75468b40ceee235b7c100c5f01c1449
-cp %{_builddir}/pytorch-1.3.0/third_party/cpuinfo/deps/clog/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/aef1ae9e4471bbac8a19a56ae105e87602ab02bc
-cp %{_builddir}/pytorch-1.3.0/third_party/cub/LICENSE.TXT %{buildroot}/usr/share/package-licenses/pytorch/eb258b43ba6094e538bf34bd307564c66c363bcb
-cp %{_builddir}/pytorch-1.3.0/third_party/eigen/COPYING.BSD %{buildroot}/usr/share/package-licenses/pytorch/8fa159b3e41e0a44e10ea224cbb83e66ae02885e
-cp %{_builddir}/pytorch-1.3.0/third_party/eigen/COPYING.GPL %{buildroot}/usr/share/package-licenses/pytorch/8624bcdae55baeef00cd11d5dfcfa60f68710a02
-cp %{_builddir}/pytorch-1.3.0/third_party/eigen/COPYING.LGPL %{buildroot}/usr/share/package-licenses/pytorch/01a6b4bf79aca9b556822601186afab86e8c4fbf
-cp %{_builddir}/pytorch-1.3.0/third_party/eigen/COPYING.MINPACK %{buildroot}/usr/share/package-licenses/pytorch/df73e10dcfd2d05667e6fe85cabe5dfe3c984727
-cp %{_builddir}/pytorch-1.3.0/third_party/eigen/COPYING.MPL2 %{buildroot}/usr/share/package-licenses/pytorch/9744cedce099f727b327cd9913a1fdc58a7f5599
-cp %{_builddir}/pytorch-1.3.0/third_party/eigen/COPYING.README %{buildroot}/usr/share/package-licenses/pytorch/a7584db2e76a50884b3fe13360f2e6a354f5bedf
-cp %{_builddir}/pytorch-1.3.0/third_party/eigen/bench/btl/COPYING %{buildroot}/usr/share/package-licenses/pytorch/0adba118df234d6b733bf662d159b55846231417
-cp %{_builddir}/pytorch-1.3.0/third_party/fbgemm/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/9aaa609318eb08d53c26973a2a459f286d62cc02
-cp %{_builddir}/pytorch-1.3.0/third_party/fbgemm/third_party/asmjit/LICENSE.md %{buildroot}/usr/share/package-licenses/pytorch/590e546bd6ac1b7b8a4f27dd6316af44b5310110
-cp %{_builddir}/pytorch-1.3.0/third_party/fbgemm/third_party/cpuinfo/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/35e0eabed75468b40ceee235b7c100c5f01c1449
-cp %{_builddir}/pytorch-1.3.0/third_party/fbgemm/third_party/cpuinfo/deps/clog/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/aef1ae9e4471bbac8a19a56ae105e87602ab02bc
-cp %{_builddir}/pytorch-1.3.0/third_party/fbgemm/third_party/googletest/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
-cp %{_builddir}/pytorch-1.3.0/third_party/fbgemm/third_party/googletest/googlemock/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
-cp %{_builddir}/pytorch-1.3.0/third_party/fbgemm/third_party/googletest/googlemock/scripts/generator/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/1d4719e04eaa4909ab5a59ef5cb04d2a5517716e
-cp %{_builddir}/pytorch-1.3.0/third_party/fbgemm/third_party/googletest/googletest/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
-cp %{_builddir}/pytorch-1.3.0/third_party/foxi/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/71a4c9500a82e883588b556505ca06deca7d2f2c
-cp %{_builddir}/pytorch-1.3.0/third_party/gemmlowp/gemmlowp/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/2b8b815229aa8a61e483fb4ba0588b8b6c491890
-cp %{_builddir}/pytorch-1.3.0/third_party/gloo/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5568c1e6f63c3c11e6090d1b5436596617959dba
-cp %{_builddir}/pytorch-1.3.0/third_party/gloo/gloo/transport/uv/LICENSE.uvw %{buildroot}/usr/share/package-licenses/pytorch/8fd9441f6f308eebe7bc1f26c214ef210741d55b
-cp %{_builddir}/pytorch-1.3.0/third_party/googletest/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
-cp %{_builddir}/pytorch-1.3.0/third_party/googletest/googlemock/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
-cp %{_builddir}/pytorch-1.3.0/third_party/googletest/googlemock/scripts/generator/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/1d4719e04eaa4909ab5a59ef5cb04d2a5517716e
-cp %{_builddir}/pytorch-1.3.0/third_party/googletest/googletest/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
-cp %{_builddir}/pytorch-1.3.0/third_party/ideep/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/355a7114eddceb5261ed5c17567e98c7e2994a6e
-cp %{_builddir}/pytorch-1.3.0/third_party/ideep/mkl-dnn/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/b62656e08adcf16ce153c1df3e835ad3afb5f9ed
-cp %{_builddir}/pytorch-1.3.0/third_party/ideep/mkl-dnn/src/cpu/xbyak/COPYRIGHT %{buildroot}/usr/share/package-licenses/pytorch/990f2a776789e9560c85fc1ddf2121d382223354
-cp %{_builddir}/pytorch-1.3.0/third_party/ideep/mkl-dnn/tests/gtests/gtest/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
-cp %{_builddir}/pytorch-1.3.0/third_party/ios-cmake/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/90de2d422ac2f17ed1e848a2fdeae1a174637713
 cp %{_builddir}/pytorch-1.3.0/third_party/miniz-2.0.8/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/7d3772817ef6dd00f95c6841e07552968eb74600
-cp %{_builddir}/pytorch-1.3.0/third_party/nccl/nccl/LICENSE.txt %{buildroot}/usr/share/package-licenses/pytorch/4d92b5c714b113c0cb49db12d7a5cf53b17fc18a
-cp %{_builddir}/pytorch-1.3.0/third_party/nccl/nccl/pkg/debian/copyright %{buildroot}/usr/share/package-licenses/pytorch/4d92b5c714b113c0cb49db12d7a5cf53b17fc18a
-cp %{_builddir}/pytorch-1.3.0/third_party/neon2sse/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/431443c5e39f2a2f7514b387082e5ac2877923bd
-cp %{_builddir}/pytorch-1.3.0/third_party/onnx-tensorrt/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/2093bd4f3f186c655497a3e5b0f969fed37e8227
-cp %{_builddir}/pytorch-1.3.0/third_party/onnx-tensorrt/third_party/onnx/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/e8438148b753bca339b6cc352f19cf4260806351
-cp %{_builddir}/pytorch-1.3.0/third_party/onnx-tensorrt/third_party/onnx/third_party/benchmark/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/2b8b815229aa8a61e483fb4ba0588b8b6c491890
-cp %{_builddir}/pytorch-1.3.0/third_party/onnx-tensorrt/third_party/onnx/third_party/pybind11/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/71a7f368f90789db807331860cb72d10abdb4acb
-cp %{_builddir}/pytorch-1.3.0/third_party/onnx-tensorrt/third_party/onnx/third_party/pybind11/tools/clang/LICENSE.TXT %{buildroot}/usr/share/package-licenses/pytorch/0ebae4fcb66d6688d40b27451ac84cf5b5c8862a
-cp %{_builddir}/pytorch-1.3.0/third_party/onnx/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/72abeb57e64fb30074f90a0cf3238a35f63d8a6d
-cp %{_builddir}/pytorch-1.3.0/third_party/onnx/third_party/benchmark/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/2b8b815229aa8a61e483fb4ba0588b8b6c491890
-cp %{_builddir}/pytorch-1.3.0/third_party/onnx/third_party/pybind11/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/a33b61f04391a38904373d020e7fbabf211383f6
-cp %{_builddir}/pytorch-1.3.0/third_party/onnx/third_party/pybind11/tools/clang/LICENSE.TXT %{buildroot}/usr/share/package-licenses/pytorch/0ebae4fcb66d6688d40b27451ac84cf5b5c8862a
-cp %{_builddir}/pytorch-1.3.0/third_party/protobuf/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/1b5a14d06dd784e88dadc5c68344be2dc13875b6
-cp %{_builddir}/pytorch-1.3.0/third_party/protobuf/third_party/benchmark/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/2b8b815229aa8a61e483fb4ba0588b8b6c491890
-cp %{_builddir}/pytorch-1.3.0/third_party/protobuf/third_party/googletest/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
-cp %{_builddir}/pytorch-1.3.0/third_party/protobuf/third_party/googletest/googlemock/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
-cp %{_builddir}/pytorch-1.3.0/third_party/protobuf/third_party/googletest/googlemock/scripts/generator/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/1d4719e04eaa4909ab5a59ef5cb04d2a5517716e
-cp %{_builddir}/pytorch-1.3.0/third_party/protobuf/third_party/googletest/googletest/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a2314153eadadc69258a9429104cd11804ea304
-cp %{_builddir}/pytorch-1.3.0/third_party/psimd/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/58293afc205f8fde63dab717b6f2de6e59bcc923
-cp %{_builddir}/pytorch-1.3.0/third_party/pthreadpool/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/95c7878c2e84c75dc8bb43ea21ac1798e2b261c1
-cp %{_builddir}/pytorch-1.3.0/third_party/pybind11/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/a33b61f04391a38904373d020e7fbabf211383f6
-cp %{_builddir}/pytorch-1.3.0/third_party/pybind11/tools/clang/LICENSE.TXT %{buildroot}/usr/share/package-licenses/pytorch/0ebae4fcb66d6688d40b27451ac84cf5b5c8862a
-cp %{_builddir}/pytorch-1.3.0/third_party/python-enum/enum/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/7dda499e7ea656d8e8901e525db809eacb487d18
-cp %{_builddir}/pytorch-1.3.0/third_party/python-peachpy/LICENSE.rst %{buildroot}/usr/share/package-licenses/pytorch/5c2d4e095dd711104c392378646b1655dac87067
-cp %{_builddir}/pytorch-1.3.0/third_party/python-six/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a09fe8ab2f714dc1fa204fc261eceb8d82962e8
-cp %{_builddir}/pytorch-1.3.0/third_party/sleef/LICENSE.txt %{buildroot}/usr/share/package-licenses/pytorch/3cba29011be2b9d59f6204d6fa0a386b1b2dbd90
-cp %{_builddir}/pytorch-1.3.0/third_party/tbb/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/7df059597099bb7dcf25d2a9aedfaf4465f72d8d
-cp %{_builddir}/pytorch-1.3.0/third_party/zstd/COPYING %{buildroot}/usr/share/package-licenses/pytorch/1d8c93712cbc9117a9e55a7ff86cebd066c8bfd8
-cp %{_builddir}/pytorch-1.3.0/third_party/zstd/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/c4130945ca3d1f8ea4a3e8af36d3c18b2232116c
-cp %{_builddir}/pytorch-1.3.0/third_party/zstd/contrib/linux-kernel/COPYING %{buildroot}/usr/share/package-licenses/pytorch/1d8c93712cbc9117a9e55a7ff86cebd066c8bfd8
+cp %{_builddir}/six-15e31431af97e5e64b80af0a3f598d382bcdd49a/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/5a09fe8ab2f714dc1fa204fc261eceb8d82962e8
+cp %{_builddir}/sleef-7f523de651585fe25cade462efccca647dcc8d02/LICENSE.txt %{buildroot}/usr/share/package-licenses/pytorch/3cba29011be2b9d59f6204d6fa0a386b1b2dbd90
+cp %{_builddir}/tbb-a51a90bc609bb73db8ea13841b5cf7aa4344d4a9/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/7df059597099bb7dcf25d2a9aedfaf4465f72d8d
+cp %{_builddir}/zstd-aec56a52fbab207fc639a1937d1e708a282edca8/COPYING %{buildroot}/usr/share/package-licenses/pytorch/1d8c93712cbc9117a9e55a7ff86cebd066c8bfd8
+cp %{_builddir}/zstd-aec56a52fbab207fc639a1937d1e708a282edca8/LICENSE %{buildroot}/usr/share/package-licenses/pytorch/c4130945ca3d1f8ea4a3e8af36d3c18b2232116c
+cp %{_builddir}/zstd-aec56a52fbab207fc639a1937d1e708a282edca8/contrib/linux-kernel/COPYING %{buildroot}/usr/share/package-licenses/pytorch/1d8c93712cbc9117a9e55a7ff86cebd066c8bfd8
 python3 -tt setup.py build  install --root=%{buildroot}
 echo ----[ mark ]----
 cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :

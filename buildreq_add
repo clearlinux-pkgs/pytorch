@@ -10,3 +10,7 @@ eigen
 pybind11
 protobuf-dev
 pybind11-dev
+# onnx and opcodes are not detected anymore, likely due to
+# https://github.com/clearlinux/autospec/issues/589
+onnx
+opcodes
