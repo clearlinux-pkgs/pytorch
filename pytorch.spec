@@ -4,7 +4,7 @@
 #
 Name     : pytorch
 Version  : 1.6.0
-Release  : 18
+Release  : 19
 URL      : https://github.com/pytorch/pytorch/archive/v1.6.0/pytorch-1.6.0.tar.gz
 Source0  : https://github.com/pytorch/pytorch/archive/v1.6.0/pytorch-1.6.0.tar.gz
 Source1  : https://github.com/01org/tbb/archive/a51a90bc609bb73db8ea13841b5cf7aa4344d4a9.tar.gz
