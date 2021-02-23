@@ -4,7 +4,7 @@
 #
 Name     : pytorch
 Version  : 1.7.1
-Release  : 21
+Release  : 22
 URL      : https://github.com/pytorch/pytorch/archive/v1.7.1/pytorch-1.7.1.tar.gz
 Source0  : https://github.com/pytorch/pytorch/archive/v1.7.1/pytorch-1.7.1.tar.gz
 Source1  : https://github.com/01org/tbb/archive/a51a90bc609bb73db8ea13841b5cf7aa4344d4a9.tar.gz
@@ -101,6 +101,7 @@ BuildRequires : requests
 BuildRequires : setuptools
 BuildRequires : six
 BuildRequires : typing_extensions
+Patch1: 0001-Make-a-couple-internal-libraries-static.patch
 
 %description
 PyTorch is an open source machine learning library based on the Torch library,
@@ -361,6 +362,7 @@ mkdir -p third_party/FP16
 cp -r %{_builddir}/FP16-4dfe081cf6bcd15db339cf2680b9281b8451eeb3/* %{_builddir}/pytorch-1.7.1/third_party/FP16
 mkdir -p android/libs/fbjni
 cp -r %{_builddir}/fbjni-f908b58be482874137fa4c0e71333e4eca481706/* %{_builddir}/pytorch-1.7.1/android/libs/fbjni
+%patch1 -p1
 
 %build
 ## build_prepend content
@@ -372,7 +374,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1614108099
+export SOURCE_DATE_EPOCH=1614120453
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$FFLAGS -fno-lto "

@@ -7,8 +7,6 @@ libm.so.6
 libmpi.so.40
 libnuma.so.1
 libopenblas.so.0
-libprocess_group_agent.so
 libpthread.so.0
 librt.so.1
 libstdc++.so.6
-libtensorpipe_agent.so
