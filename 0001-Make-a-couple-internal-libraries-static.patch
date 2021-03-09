@@ -9,10 +9,10 @@ Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/caffe2/CMakeLists.txt b/caffe2/CMakeLists.txt
-index eeb4801..770ebd3 100644
+index 7bef849..0cf0151 100644
 --- a/caffe2/CMakeLists.txt
 +++ b/caffe2/CMakeLists.txt
-@@ -297,11 +297,11 @@ if(NOT INTERN_BUILD_MOBILE OR NOT BUILD_CAFFE2_MOBILE)
+@@ -347,11 +347,11 @@ if(NOT INTERN_BUILD_MOBILE OR NOT BUILD_CAFFE2_MOBILE)
      # setting the USE_TENSORPIPE compile definition, this target will just end
      # up being empty. Downstream targets should also add a #ifdef guard.
      if(NOT WIN32)
@@ -23,6 +23,6 @@ index eeb4801..770ebd3 100644
  
 -      add_library(tensorpipe_agent
 +      add_library(tensorpipe_agent STATIC
+         "${TORCH_SRC_DIR}/csrc/distributed/rpc/macros.h"
          "${TORCH_SRC_DIR}/csrc/distributed/rpc/tensorpipe_agent.cpp"
          "${TORCH_SRC_DIR}/csrc/distributed/rpc/tensorpipe_agent.h"
-         "${TORCH_SRC_DIR}/csrc/distributed/rpc/tensorpipe_utils.cpp"
