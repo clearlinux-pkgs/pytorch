@@ -2,5 +2,6 @@
 # undesirable. One entry per line, no whitespace.
 enum34
 future
-pycuda
-tensorrt
+pypi(pycuda)
+pypi(tensorrt)
+pypi(cmake)

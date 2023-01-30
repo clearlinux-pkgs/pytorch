@@ -1,6 +1,5 @@
 # This file contains additional build requirements that did not get
 # picked up automatically. One name per line, no whitespace.
-compat-gcc-10-dev
 mkl-dnn-dev
 openmpi-dev
 PyYAML
@@ -8,10 +7,16 @@ openblas-dev
 llvm
 eigen-dev
 eigen
-pybind11
 protobuf-dev
-pybind11-dev
 # onnx and opcodes are not detected anymore, likely due to
 # https://github.com/clearlinux/autospec/issues/589
-onnx
-opcodes
+cmake
+meson
+openssl-dev
+protobuf-dev
+protobuf
+protobuf-c-dev
+gmp-dev
+fftw-dev
+mpfr-dev
+mkl-dnn-dev

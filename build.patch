@@ -1,0 +1,32 @@
+--- pytorch-v1.13.1/third_party/gloo/gloo/common/linux.cc~	2022-12-16 00:23:48.000000000 +0000
++++ pytorch-v1.13.1/third_party/gloo/gloo/common/linux.cc	2023-01-30 18:37:02.875755125 +0000
+@@ -193,8 +193,8 @@
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,6,0)
+   constexpr auto link_mode_data_nwords = 3 * 127;
+   struct {
+-    struct ethtool_link_settings req;
+     __u32 link_mode_data[link_mode_data_nwords];
++    struct ethtool_link_settings req;
+   } ecmd;
+   int rv;
+ 
+--- pytorch-v1.13.1/third_party/gloo/gloo/transport/tcp/device.h~	2022-12-16 00:23:48.000000000 +0000
++++ pytorch-v1.13.1/third_party/gloo/gloo/transport/tcp/device.h	2023-01-30 18:29:47.975310894 +0000
+@@ -13,6 +13,7 @@
+ #include <memory>
+ #include <mutex>
+ #include <thread>
++#include <array>
+ 
+ #include <gloo/transport/device.h>
+ #include <gloo/transport/tcp/attr.h>
+--- pytorch-v1.13.1/third_party/gloo/gloo/transport/ibverbs/pair.h~	2022-12-16 00:23:48.000000000 +0000
++++ pytorch-v1.13.1/third_party/gloo/gloo/transport/ibverbs/pair.h	2023-01-30 18:29:24.923505627 +0000
+@@ -17,6 +17,7 @@
+ #include <mutex>
+ #include <string>
+ #include <vector>
++#include <array>
+ 
+ #include "gloo/transport/ibverbs/address.h"
+ #include "gloo/transport/ibverbs/device.h"

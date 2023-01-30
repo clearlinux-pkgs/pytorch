@@ -1,4 +1,6 @@
-1.9.1
+1.13.1
+doxygen
 numactl-dev
 openssl-dev
+pypi-sphinx
 python3-dev

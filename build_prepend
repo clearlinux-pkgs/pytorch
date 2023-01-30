@@ -1,5 +1,4 @@
 export USE_CUDA=0
+export USE_ROCM=0
 export USE_CUDNN=0
 export REL_WITH_DEB_INFO=1
-export CC=gcc-10
-export CXX=g++-10
