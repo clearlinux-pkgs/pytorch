@@ -9,7 +9,7 @@ URL      : https://github.com/pytorch/pytorch/releases/download/v1.13.1/pytorch-
 Source0  : https://github.com/pytorch/pytorch/releases/download/v1.13.1/pytorch-v1.13.1.tar.gz
 Summary  : Open source machine learning framework
 Group    : Development/Tools
-License  : Apache-2.0 BSD-2-Clause BSD-3-Clause BSD-3-Clause-LBNL BSL-1.0 CC-BY-4.0 GPL-2.0 GPL-3.0 LGPL-2.1 MIT MPL-2.0 MPL-2.0-no-copyleft-exception Minpack NCSA Python-2.0 Unlicense Zlib
+License  : Apache-2.0 BSD-2-Clause BSD-3-Clause BSD-3-Clause-LBNL BSL-1.0 CC-BY-4.0 GPL-2.0 GPL-3.0 LGPL-2.1 MIT MPL-2.0 MPL-2.0-no-copyleft-exception NCSA Python-2.0 Unlicense Zlib
 Requires: pytorch-bin = %{version}-%{release}
 Requires: pytorch-filemap = %{version}-%{release}
 Requires: pytorch-lib = %{version}-%{release}
