@@ -16,8 +16,8 @@ Requires: pytorch-lib = %{version}-%{release}
 Requires: pytorch-license = %{version}-%{release}
 Requires: pytorch-python = %{version}-%{release}
 Requires: pytorch-python3 = %{version}-%{release}
-Requires: onnx
-Requires: opcodes
+Requires: pypi(onnx)
+Requires: pypi(opcodes)
 BuildRequires : PyYAML
 BuildRequires : buildreq-cmake
 BuildRequires : buildreq-distutils3

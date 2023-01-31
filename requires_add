@@ -2,5 +2,5 @@
 # picked up automatically. One name per line, no whitespace.
 # onnx and opcodes are not detected anymore, likely due to
 # https://github.com/clearlinux/autospec/issues/589
-onnx
-opcodes
+pypi(opcodes)
+pypi(onnx)
