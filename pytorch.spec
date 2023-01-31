@@ -4,7 +4,7 @@
 #
 Name     : pytorch
 Version  : 1.13.1
-Release  : 27
+Release  : 28
 URL      : https://github.com/pytorch/pytorch/releases/download/v1.13.1/pytorch-v1.13.1.tar.gz
 Source0  : https://github.com/pytorch/pytorch/releases/download/v1.13.1/pytorch-v1.13.1.tar.gz
 Summary  : Open source machine learning framework
