@@ -4,12 +4,12 @@
 #
 Name     : pytorch
 Version  : 1.13.1
-Release  : 29
+Release  : 30
 URL      : https://github.com/pytorch/pytorch/releases/download/v1.13.1/pytorch-v1.13.1.tar.gz
 Source0  : https://github.com/pytorch/pytorch/releases/download/v1.13.1/pytorch-v1.13.1.tar.gz
 Summary  : Open source machine learning framework
 Group    : Development/Tools
-License  : Apache-2.0 BSD-2-Clause BSD-3-Clause BSD-3-Clause-LBNL BSL-1.0 CC-BY-4.0 GPL-2.0 GPL-3.0 LGPL-2.1 MIT MPL-2.0 MPL-2.0-no-copyleft-exception NCSA Python-2.0 Unlicense Zlib
+License  : Apache-2.0 BSD-2-Clause BSD-3-Clause BSD-3-Clause-LBNL BSL-1.0 CC-BY-4.0 GPL-2.0 GPL-3.0 LGPL-2.1 MIT MPL-2.0 MPL-2.0-no-copyleft-exception Minpack NCSA Python-2.0 Unlicense Zlib
 Requires: pytorch-bin = %{version}-%{release}
 Requires: pytorch-filemap = %{version}-%{release}
 Requires: pytorch-lib = %{version}-%{release}
@@ -21,7 +21,6 @@ Requires: pypi(opcodes)
 BuildRequires : PyYAML
 BuildRequires : buildreq-cmake
 BuildRequires : buildreq-distutils3
-BuildRequires : buildreq-golang
 BuildRequires : buildreq-meson
 BuildRequires : buildreq-qmake
 BuildRequires : cmake
@@ -184,7 +183,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1675108759
+export SOURCE_DATE_EPOCH=1677185412
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz "
 export FCFLAGS="$FFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz "
