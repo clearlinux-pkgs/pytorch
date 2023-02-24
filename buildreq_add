@@ -20,3 +20,4 @@ gmp-dev
 fftw-dev
 mpfr-dev
 mkl-dnn-dev
+pypi-onnx
