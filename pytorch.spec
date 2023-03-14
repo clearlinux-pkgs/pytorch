@@ -4,7 +4,7 @@
 #
 Name     : pytorch
 Version  : 1.13.1
-Release  : 31
+Release  : 32
 URL      : https://github.com/pytorch/pytorch/releases/download/v1.13.1/pytorch-v1.13.1.tar.gz
 Source0  : https://github.com/pytorch/pytorch/releases/download/v1.13.1/pytorch-v1.13.1.tar.gz
 Summary  : Open source machine learning framework
@@ -160,6 +160,7 @@ Requires: pypi(scipy)
 Requires: pypi(sympy)
 Requires: pypi(types_dataclasses)
 Requires: pypi(watchdog)
+Provides: pypi(torch)
 
 %description python3
 python3 components for the pytorch package.
@@ -185,7 +186,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1677258099
+export SOURCE_DATE_EPOCH=1678819319
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz "
 export FCFLAGS="$FFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz "
