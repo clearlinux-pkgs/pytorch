@@ -1,6 +1,5 @@
-1.13.1
+2.0.1
 doxygen
 numactl-dev
-openssl-dev
 pypi-sphinx
 python3-dev

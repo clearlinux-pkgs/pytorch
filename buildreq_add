@@ -1,6 +1,5 @@
 # This file contains additional build requirements that did not get
 # picked up automatically. One name per line, no whitespace.
-mkl-dnn-dev
 openmpi-dev
 PyYAML
 openblas-dev
@@ -19,5 +18,4 @@ protobuf-c-dev
 gmp-dev
 fftw-dev
 mpfr-dev
-mkl-dnn-dev
 pypi-onnx
