@@ -7,7 +7,7 @@
 #
 Name     : pytorch
 Version  : 2.3.0
-Release  : 37
+Release  : 38
 URL      : https://github.com/pytorch/pytorch/releases/download/v2.3.0/pytorch-v2.3.0.tar.gz
 Source0  : https://github.com/pytorch/pytorch/releases/download/v2.3.0/pytorch-v2.3.0.tar.gz
 Summary  : Open source machine learning framework
@@ -91,6 +91,11 @@ python components for the pytorch package.
 Summary: python3 components for the pytorch package.
 Group: Default
 Requires: python3-core
+Requires: pypi(fsspec)
+Requires: pypi(jinja2)
+Requires: pypi(networkx)
+Requires: pypi(sympi)
+Requires: pypi(typing-extensions)
 Provides: pypi(torch)
 
 %description python3
@@ -116,7 +121,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1717177266
+export SOURCE_DATE_EPOCH=1717188410
 export GCC_IGNORE_WERROR=1
 CLEAR_INTERMEDIATE_CFLAGS="$CLEAR_INTERMEDIATE_CFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
 CLEAR_INTERMEDIATE_FCFLAGS="$CLEAR_INTERMEDIATE_FFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "

@@ -1,0 +1,5 @@
+pypi(fsspec)
+pypi(jinja2)
+pypi(networkx)
+pypi(sympi)
+pypi(typing-extensions)
