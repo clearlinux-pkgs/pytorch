@@ -3,6 +3,8 @@
 buildreq-golang
 enum34
 future
+pypi(cmake)
+pypi(lark)
+pypi(optree)
 pypi(pycuda)
 pypi(tensorrt)
-pypi(cmake)

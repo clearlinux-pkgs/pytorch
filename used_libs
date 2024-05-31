@@ -1,9 +1,9 @@
 ld-linux-x86-64.so.2
 libc.so.6
 libgcc_s.so.1
-libgomp.so.1
 libm.so.6
 libmpi.so.40
 libnuma.so.1
+libomp.so
 libopenblas.so.0
 libstdc++.so.6

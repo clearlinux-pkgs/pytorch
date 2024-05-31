@@ -7,7 +7,7 @@
 #
 Name     : pytorch
 Version  : 2.3.0
-Release  : 39
+Release  : 40
 URL      : https://github.com/pytorch/pytorch/releases/download/v2.3.0/pytorch-v2.3.0.tar.gz
 Source0  : https://github.com/pytorch/pytorch/releases/download/v2.3.0/pytorch-v2.3.0.tar.gz
 Summary  : Open source machine learning framework
@@ -36,7 +36,25 @@ BuildRequires : openssl-dev
 BuildRequires : protobuf
 BuildRequires : protobuf-c-dev
 BuildRequires : protobuf-dev
+BuildRequires : pypi(astunparse)
+BuildRequires : pypi(expecttest)
+BuildRequires : pypi(filelock)
+BuildRequires : pypi(fsspec)
+BuildRequires : pypi(hypothesis)
+BuildRequires : pypi(jinja2)
+BuildRequires : pypi(networkx)
+BuildRequires : pypi(ninja)
+BuildRequires : pypi(numpy)
+BuildRequires : pypi(packaging)
+BuildRequires : pypi(psutil)
+BuildRequires : pypi(pyyaml)
+BuildRequires : pypi(requests)
+BuildRequires : pypi(setuptools)
 BuildRequires : pypi(six)
+BuildRequires : pypi(sympy)
+BuildRequires : pypi(types_dataclasses)
+BuildRequires : pypi(typing_extensions)
+BuildRequires : pypi(wheel)
 BuildRequires : pypi-onnx
 BuildRequires : pypi-sphinx
 BuildRequires : python3-dev
@@ -91,10 +109,16 @@ python components for the pytorch package.
 Summary: python3 components for the pytorch package.
 Group: Default
 Requires: python3-core
+Requires: pypi(expecttest)
+Requires: pypi(filelock)
 Requires: pypi(fsspec)
+Requires: pypi(hypothesis)
 Requires: pypi(jinja2)
 Requires: pypi(networkx)
+Requires: pypi(packaging)
+Requires: pypi(psutil)
 Requires: pypi(sympy)
+Requires: pypi(types_dataclasses)
 Requires: pypi(typing_extensions)
 Provides: pypi(torch)
 
@@ -121,7 +145,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1717188410
+export SOURCE_DATE_EPOCH=1717197087
 export GCC_IGNORE_WERROR=1
 CLEAR_INTERMEDIATE_CFLAGS="$CLEAR_INTERMEDIATE_CFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
 CLEAR_INTERMEDIATE_FCFLAGS="$CLEAR_INTERMEDIATE_FFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
