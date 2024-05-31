@@ -94,8 +94,8 @@ Requires: python3-core
 Requires: pypi(fsspec)
 Requires: pypi(jinja2)
 Requires: pypi(networkx)
-Requires: pypi(sympi)
-Requires: pypi(typing-extensions)
+Requires: pypi(sympy)
+Requires: pypi(typing_extensions)
 Provides: pypi(torch)
 
 %description python3
