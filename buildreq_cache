@@ -1,4 +1,5 @@
-2.1.2
+2.3.0
 numactl-dev
+pypi(six)
 pypi-sphinx
 python3-dev
