@@ -7,7 +7,7 @@
 #
 Name     : pytorch
 Version  : 2.3.0
-Release  : 38
+Release  : 39
 URL      : https://github.com/pytorch/pytorch/releases/download/v2.3.0/pytorch-v2.3.0.tar.gz
 Source0  : https://github.com/pytorch/pytorch/releases/download/v2.3.0/pytorch-v2.3.0.tar.gz
 Summary  : Open source machine learning framework
