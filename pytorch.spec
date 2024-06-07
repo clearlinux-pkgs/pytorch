@@ -6,10 +6,10 @@
 # autospec commit: fbcebd0
 #
 Name     : pytorch
-Version  : 2.3.0
-Release  : 40
-URL      : https://github.com/pytorch/pytorch/releases/download/v2.3.0/pytorch-v2.3.0.tar.gz
-Source0  : https://github.com/pytorch/pytorch/releases/download/v2.3.0/pytorch-v2.3.0.tar.gz
+Version  : 2.3.1
+Release  : 41
+URL      : https://github.com/pytorch/pytorch/releases/download/v2.3.1/pytorch-v2.3.1.tar.gz
+Source0  : https://github.com/pytorch/pytorch/releases/download/v2.3.1/pytorch-v2.3.1.tar.gz
 Summary  : Open source machine learning framework
 Group    : Development/Tools
 License  : Apache-2.0 BSD-2-Clause BSD-3-Clause BSD-3-Clause-LBNL BSL-1.0 CC-BY-4.0 CC0-1.0 GPL-2.0 GPL-3.0 LGPL-2.1 MIT MPL-2.0 MPL-2.0-no-copyleft-exception NCSA Python-2.0 Unlicense Zlib
@@ -50,7 +50,6 @@ BuildRequires : pypi(psutil)
 BuildRequires : pypi(pyyaml)
 BuildRequires : pypi(requests)
 BuildRequires : pypi(setuptools)
-BuildRequires : pypi(six)
 BuildRequires : pypi(sympy)
 BuildRequires : pypi(types_dataclasses)
 BuildRequires : pypi(typing_extensions)
@@ -127,10 +126,10 @@ python3 components for the pytorch package.
 
 
 %prep
-%setup -q -n pytorch-v2.3.0
-cd %{_builddir}/pytorch-v2.3.0
+%setup -q -n pytorch-v2.3.1
+cd %{_builddir}/pytorch-v2.3.1
 pushd ..
-cp -a pytorch-v2.3.0 buildavx2
+cp -a pytorch-v2.3.1 buildavx2
 popd
 
 %build
@@ -145,7 +144,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1717197087
+export SOURCE_DATE_EPOCH=1717721503
 export GCC_IGNORE_WERROR=1
 CLEAR_INTERMEDIATE_CFLAGS="$CLEAR_INTERMEDIATE_CFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
 CLEAR_INTERMEDIATE_FCFLAGS="$CLEAR_INTERMEDIATE_FFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
