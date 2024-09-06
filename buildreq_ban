@@ -5,6 +5,7 @@ enum34
 future
 pypi(cmake)
 pypi(lark)
+pypi(lintrunner)
 pypi(optree)
 pypi(pycuda)
 pypi(tensorrt)

@@ -1,0 +1,24 @@
+From d58115929bbdd4a6d216e42a0c6f74d9b72487f7 Mon Sep 17 00:00:00 2001
+From: "Brett T. Warden" <brett.t.warden@intel.com>
+Date: Fri, 6 Sep 2024 12:41:39 -0700
+Subject: [PATCH] Install caffe2 Python under DESTDIR
+
+---
+ caffe2/CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/caffe2/CMakeLists.txt b/caffe2/CMakeLists.txt
+index 89c31fab1134..cd430b654b0c 100644
+--- a/caffe2/CMakeLists.txt
++++ b/caffe2/CMakeLists.txt
+@@ -1917,6 +1917,6 @@ if(BUILD_PYTHON)
+ 
+   # Install commands
+   # Pick up static python files
+-  install(DIRECTORY ${CMAKE_BINARY_DIR}/caffe2 DESTINATION ${PYTHON_LIB_REL_PATH}
++  install(DIRECTORY ${CMAKE_BINARY_DIR}/caffe2 DESTINATION ${CMAKE_BINARY_DIR}/${PYTHON_LIB_REL_PATH}
+           FILES_MATCHING PATTERN "*.py")
+ endif()
+-- 
+2.46.0
+
