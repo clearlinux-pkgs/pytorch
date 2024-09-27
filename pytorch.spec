@@ -7,7 +7,7 @@
 #
 Name     : pytorch
 Version  : 2.4.1
-Release  : 42
+Release  : 43
 URL      : https://github.com/pytorch/pytorch/releases/download/v2.4.1/pytorch-v2.4.1.tar.gz
 Source0  : https://github.com/pytorch/pytorch/releases/download/v2.4.1/pytorch-v2.4.1.tar.gz
 Summary  : Open source machine learning framework
