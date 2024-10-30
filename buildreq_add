@@ -19,3 +19,7 @@ gmp-dev
 fftw-dev
 mpfr-dev
 pypi-onnx
+mkl-dnn-dev
+pypi-six
+Vulkan-Loader-dev
+Vulkan-Header-dev

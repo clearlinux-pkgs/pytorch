@@ -2,4 +2,5 @@ export USE_CUDA=0
 export USE_ROCM=0
 export USE_CUDNN=0
 export USE_MKLDNN=1
+export USE_VULKAN=1
 export REL_WITH_DEB_INFO=1
