@@ -7,7 +7,7 @@
 #
 Name     : pytorch
 Version  : 2.5.1
-Release  : 46
+Release  : 47
 URL      : https://github.com/pytorch/pytorch/releases/download/v2.5.1/pytorch-v2.5.1.tar.gz
 Source0  : https://github.com/pytorch/pytorch/releases/download/v2.5.1/pytorch-v2.5.1.tar.gz
 Summary  : Open source machine learning framework
@@ -20,6 +20,8 @@ Requires: pytorch-python3 = %{version}-%{release}
 Requires: pypi(onnx)
 Requires: pypi(opcodes)
 BuildRequires : PyYAML
+BuildRequires : Vulkan-Headers-dev
+BuildRequires : Vulkan-Loader-dev
 BuildRequires : buildreq-distutils3
 BuildRequires : cmake
 BuildRequires : eigen
@@ -58,6 +60,7 @@ BuildRequires : pypi(wheel)
 BuildRequires : pypi-onnx
 BuildRequires : pypi-six
 BuildRequires : python3-dev
+BuildRequires : shaderc
 # Suppress stripping binaries
 %define __strip /bin/true
 %define debug_package %{nil}
@@ -139,13 +142,14 @@ export USE_CUDA=0
 export USE_ROCM=0
 export USE_CUDNN=0
 export USE_MKLDNN=1
+export USE_VULKAN=1
 export REL_WITH_DEB_INFO=1
 ## build_prepend end
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1730308038
+export SOURCE_DATE_EPOCH=1730313887
 export GCC_IGNORE_WERROR=1
 CLEAR_INTERMEDIATE_CFLAGS="$CLEAR_INTERMEDIATE_CFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
 CLEAR_INTERMEDIATE_FCFLAGS="$CLEAR_INTERMEDIATE_FFLAGS -fdebug-types-section -femit-struct-debug-baseonly -fno-lto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
@@ -167,6 +171,7 @@ export USE_CUDA=0
 export USE_ROCM=0
 export USE_CUDNN=0
 export USE_MKLDNN=1
+export USE_VULKAN=1
 export REL_WITH_DEB_INFO=1
 ## build_prepend end
 CFLAGS="$CLEAR_INTERMEDIATE_CFLAGS -march=x86-64-v3 -Wl,-z,x86-64-v3 "

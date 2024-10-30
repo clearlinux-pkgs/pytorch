@@ -22,4 +22,5 @@ pypi-onnx
 mkl-dnn-dev
 pypi-six
 Vulkan-Loader-dev
-Vulkan-Header-dev
+Vulkan-Headers-dev
+shaderc

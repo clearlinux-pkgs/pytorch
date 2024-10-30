@@ -7,3 +7,4 @@ libmpi.so.40
 libnuma.so.1
 libopenblas.so.0
 libstdc++.so.6
+libvulkan.so.1
